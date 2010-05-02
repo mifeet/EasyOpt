@@ -246,6 +246,29 @@ namespace EasyOpt
         }
     }
 
+    class FloatParameter : Parameter<float>
+    {
+        public FloatParameter(bool isRequired, String usageName)
+            : this(isRequired, usageName, 0)
+        { }
+        public FloatParameter(bool isRequired, String usageName, float defaultValue)
+            : base(isRequired, usageName, defaultValue)
+        { }
+
+        protected override float convert(string parameterValue)
+        {
+            float result;
+            if (float.TryParse(parameterValue, out result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception(); // TODO: replace by a parser-specific exception
+            }
+        }
+    }
+
     class EnumParameter<T> : Parameter<T>
     {
         private String[] acceptedValues;
@@ -287,7 +310,7 @@ namespace EasyOpt
         }
     }
 
-    class LowerBoundConstraint : IConstraint<int>
+    sealed class LowerBoundConstraint : IConstraint<int>
     {
         private int limit;
 
@@ -302,7 +325,7 @@ namespace EasyOpt
         }
     }
 
-    class UpperBoundConstraint : IConstraint<int>
+    sealed class UpperBoundConstraint : IConstraint<int>
     {
         private int limit;
 
@@ -317,7 +340,7 @@ namespace EasyOpt
         }
     }
 
-    class StringEnumerationConstraint : IConstraint<String>
+    sealed class StringEnumerationConstraint : IConstraint<String>
     {
         private IEnumerable<String> acceptedValues;
         private IEqualityComparer<String> comparer;
@@ -342,6 +365,14 @@ namespace EasyOpt
         public bool IsValid(String parameter)
         {
             return acceptedValues.Contains(parameter, comparer);
+        }
+    }
+
+    sealed class ExistingFileConstraint : IConstraint<String>
+    {
+        public bool IsValid(String parameter)
+        {
+            return System.IO.File.Exists(parameter);
         }
     }
 

@@ -3,10 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOpt", "EasyOpt\EasyOpt.csproj", "{1280F950-8E15-47B1-BCBF-C226B516375A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEasyOpt", "TestEasyOpt\TestEasyOpt.csproj", "{03FDCDD4-8FBD-40B3-940C-C776D6CFA0F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86E80D0A-FE5F-4B9A-9563-80713CB0AB95}"
+	ProjectSection(SolutionItems) = preProject
+		EasyOpt.vsmdi = EasyOpt.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
 		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = EasyOpt.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +28,10 @@ Global
 		{1280F950-8E15-47B1-BCBF-C226B516375A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1280F950-8E15-47B1-BCBF-C226B516375A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1280F950-8E15-47B1-BCBF-C226B516375A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03FDCDD4-8FBD-40B3-940C-C776D6CFA0F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03FDCDD4-8FBD-40B3-940C-C776D6CFA0F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03FDCDD4-8FBD-40B3-940C-C776D6CFA0F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03FDCDD4-8FBD-40B3-940C-C776D6CFA0F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

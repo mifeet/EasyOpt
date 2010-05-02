@@ -5,62 +5,6 @@ using System.Text;
 
 namespace EasyOpt
 {
-    public class Parser
-    {
-        private Dictionary<String, IOption> options;
-
-        public Parser()
-        {
-            options = new Dictionary<string, IOption>();
-        }
-
-        public static Option<bool> createOption(bool isRequired, String usageText)
-        {
-            return new SimpleOption(isRequired, usageText);
-        }
-
-        public static Option<T> createOption<T>(bool isRequired, String usageText, Parameter<T> parameter)
-        {
-            return new ParameterOption<T>(isRequired, usageText, parameter);
-        }
-
-        public void addOption(IOption option, params String[] names)
-        {
-            // checkConfiguration(option); ?
-            foreach (String name in names)
-            {
-                options.Add(name, option);
-            }
-        }
-
-        public void addOption(IOption option, char shortName)
-        {
-            addOption(option, new String[] { shortName.ToString() });
-        }
-
-        public void addOption(IOption option, char shortName, String longName)
-        {
-            addOption(option, new String[] { shortName.ToString(), longName });
-        }
-
-        public void Parse(String[] args)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public String[] GetArguments() // return non-option arguments
-        {
-            throw new NotImplementedException();
-        }
-
-        public String UsageText { get; set; }
-
-        public String getUsage()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public interface IConstraint<T>
     {
         bool IsValid(T parameterValue);
@@ -380,11 +324,11 @@ namespace EasyOpt
     {
         static void Main(string[] args)
         {
-            Parser p = new Parser();
+            CommandLine p = new CommandLine(args);
 
             // GNU Time example:            
             var formatParam = new StringParameter(true, "FORMAT", "real %f\nuser %f\nsys %f\n");
-            var format = Parser.createOption( // or new ParameterOption<String>(
+            var format = OptionFactory.create( // or new ParameterOption<String>(
                 false,
                 "Specify output format, possibly overriding the format specified in the environment variable TIME.",
                 formatParam
@@ -394,32 +338,32 @@ namespace EasyOpt
             // p.addOption(format, "f", "format");
             // p.addOption(format, new String[] { "f", "format" });
 
-            var portability = Parser.createOption(false, "Use the portable output format");
+            var portability = OptionFactory.create(false, "Use the portable output format");
             p.addOption(portability, 'p', "portability");
 
             var outputParam = new StringParameter(true, "FILE");
-            var output = Parser.createOption(
+            var output = OptionFactory.create(
                 false,
                 "Do not send the results to stderr, but overwrite the specified file.",
                 outputParam
             );
             p.addOption(format, 'o', "output");
 
-            var append = Parser.createOption(false, "(Used together with -o.) Do not overwrite but append");
+            var append = OptionFactory.create(false, "(Used together with -o.) Do not overwrite but append");
             p.addOption(portability, 'a', "append");
 
-            var verbose = Parser.createOption(false, "Give very verbose output about all the program knows about.");
+            var verbose = OptionFactory.create(false, "Give very verbose output about all the program knows about.");
             p.addOption(verbose, 'v', "verbose");
 
-            var help = Parser.createOption(false, "Print a usage message on standard output and exit successfully.");
+            var help = OptionFactory.create(false, "Print a usage message on standard output and exit successfully.");
             //p.addOption(help, "help");
 
-            var version = Parser.createOption(false, "Print version information on standard output, then exit successfully.");
+            var version = OptionFactory.create(false, "Print version information on standard output, then exit successfully.");
             p.addOption(version, 'V', "version");
 
             p.UsageText = " time [options] command [arguments...]\n\n";
 
-            p.Parse(args);
+            p.Parse();
 
             // usage:
             String formatString = format.Value; // returns String
@@ -427,7 +371,7 @@ namespace EasyOpt
 
 
             var enumParam = new EnumParameter<myEnum>(false, "");
-            var enumOption = Parser.createOption(false, "", enumParam);
+            var enumOption = OptionFactory.create(false, "", enumParam);
             p.addOption(enumOption, 'e');
 
             var stringParam = new StringParameter(false, "");

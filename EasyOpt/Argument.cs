@@ -6,10 +6,26 @@ using System.Text;
 
 namespace EasyOpt
 {
-    enum ArgumentType
+    /**
+     * Enumeration with the possible kinds of arguments that can be parsed.
+     */ 
+    public enum ArgumentType
     {
         division, shortOption, longOption, programArgument
     }
+
+    public static class Extensions
+    {
+        public static bool IsOption(this ArgumentType argumentType)
+        {
+            bool isAnOption = argumentType.Equals(ArgumentType.shortOption) || 
+                argumentType.Equals(ArgumentType.longOption);
+
+            return isAnOption; 
+        }
+    }
+
+
 
     /**
      * Class that represents the data stored inside an argument received through the command line.

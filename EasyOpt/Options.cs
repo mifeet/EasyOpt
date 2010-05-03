@@ -20,10 +20,9 @@ namespace EasyOpt
         bool IsRequired
         {
             get;
-            set;
         }
 
-        string UnParsedArgument
+        string UnparsedArgument
         {
             get;
             set;
@@ -44,28 +43,16 @@ namespace EasyOpt
             get;
         }
 
+        public abstract bool IsParameterRequired
+        {
+            get;
+        }
+
         public abstract void SetValue(String value);
 
         public bool IsRequired { get; set; }
 
-        public string UnParsedArgument
-        {
-            get;
-            set;
-        }
-
-        public bool IsParameterRequired
-        {
-            get
-            {
-                if (this.Parameter == null)
-                {
-                    return false;
-                }
-
-                return this.Parameter.IsRequired;
-            }
-        }
+        public string UnparsedArgument { get; set; }
 
         public String UsageText { get; set; }
 
@@ -95,6 +82,11 @@ namespace EasyOpt
             throw new ForbiddenParameterException(); // TODO: on the command line, a parameter was passed to an option without a parameter
         }
 
+        public override bool IsParameterRequired
+        {
+            get { return false; }
+        }
+
         public SimpleOption(bool isRequired, String usageText)
             : base(isRequired, usageText)
         { }
@@ -117,6 +109,11 @@ namespace EasyOpt
         public override void SetValue(string value)
         {
             this.parameter.SetValue(value);
+        }
+
+        public override bool IsParameterRequired
+        {
+            get { return parameter.IsRequired; }
         }
 
         public ParameterOption(bool isRequired, String usageText, Parameter<T> parameter)

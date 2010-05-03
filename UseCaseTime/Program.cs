@@ -13,45 +13,46 @@ namespace UseCaseTime
     {
         static void Main(string[] args)
         {
-            Parser parser = new Parser();
+            
+            CommandLine parser = new CommandLine(args);
 
             var outputParam = new StringParameter(true, "FILE");
-            var output = Parser.CreateOption(
+            var output = OptionFactory.Create(
                 false,
                 "Do not send the results to stderr, but overwrite the specified file.",
                 outputParam
             );
             parser.AddOption(output, 'o', "output");
 
-            var append = Parser.CreateOption(false, "(Used together with -o.) Do not overwrite but append");
+            var append = OptionFactory.Create(false, "(Used together with -o.) Do not overwrite but append");
             parser.AddOption(append, 'a', "append");
 
             var formatParam = new StringParameter(true, "FORMAT", "real %f\nuser %f\nsys %f\n");
-            var format = Parser.CreateOption( 
+            var format = OptionFactory.Create( 
                 false,
                 "Specify output format, possibly overriding the format specified in the environment variable TIME.",
                 formatParam
             );
             parser.AddOption(format, 'f', "format");
 
-            var help = Parser.CreateOption(false, "Print a usage message on standard output and exit successfully.");
+            var help = OptionFactory.Create(false, "Print a usage message on standard output and exit successfully.");
             parser.AddOption(help, "help");
 
-            var portability = Parser.CreateOption(false, "Use the portable output format");
+            var portability = OptionFactory.Create(false, "Use the portable output format");
             parser.AddOption(portability, 'p', "portability");
 
-            var verbose = Parser.CreateOption(false, "Give very verbose output about all the program knows about.");
+            var verbose = OptionFactory.Create(false, "Give very verbose output about all the program knows about.");
             parser.AddOption(verbose, 'v', "verbose");
 
-            var quiet = Parser.CreateOption(false, "Do not report the status of the program even if it is different");
+            var quiet = OptionFactory.Create(false, "Do not report the status of the program even if it is different");
             parser.AddOption(quiet, "quiet");
 
-            var version = Parser.CreateOption(false, "Print version information on standard output, then exit successfully.");
+            var version = OptionFactory.Create(false, "Print version information on standard output, then exit successfully.");
             parser.AddOption(version, 'V', "version");
 
             parser.UsageText = " time [options] command [arguments...]\n\n";
 
-            parser.Parse(args);
+            parser.Parse();
 
             Console.WriteLine("{0}: {1}", "output", output.Value);
             Console.WriteLine("{0}: {1}", "append", append.Value);

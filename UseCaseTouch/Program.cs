@@ -27,38 +27,38 @@ namespace UseCaseTouch
 
         static void Main(string[] args)
         {
-            Parser parser = new Parser();
+            CommandLine parser = new CommandLine(args);
 
-            var accessTime = Parser.CreateOption(false, "change only the access time");
+            var accessTime = OptionFactory.Create(false, "change only the access time");
             parser.AddOption(accessTime, 'a');
 
-            var noCreate = Parser.CreateOption(false, "do not create any files");
+            var noCreate = OptionFactory.Create(false, "do not create any files");
             parser.AddOption(noCreate, 'c', "no-create");
 
             var dateParam = new StringParameter(true, "STRING");
-            var date = Parser.CreateOption(false, "parse STRING and use it instead of current time", dateParam);
+            var date = OptionFactory.Create(false, "parse STRING and use it instead of current time", dateParam);
             parser.AddOption(date, 'd', "date");
 
             var referenceParam = new StringParameter(true, "FILE");
             referenceParam.AddConstraint(new ExistingFileConstraint());
-            var reference = Parser.CreateOption(false, "use this file's times instead of current time", referenceParam);
+            var reference = OptionFactory.Create(false, "use this file's times instead of current time", referenceParam);
             parser.AddOption(reference, 'r', "reference");
 
             var stampParam = new StringParameter(true, "STAMP");
             stampParam.AddConstraint(new TimeConstraint());
-            var stamp = Parser.CreateOption(false, "use [[CC]YY]MMDDhhmm[.ss] instead of current time");
+            var stamp = OptionFactory.Create(false, "use [[CC]YY]MMDDhhmm[.ss] instead of current time");
             parser.AddOption(stamp, 't');
 
             var timeParam = new EnumParameter<Time>(true, "WORD");
-            var time = Parser.CreateOption(false, "change the specified time: WORD is access, atime, or use", timeParam);
+            var time = OptionFactory.Create(false, "change the specified time: WORD is access, atime, or use", timeParam);
             parser.AddOption(time, "time");
 
-            var version = Parser.CreateOption(false, "output version information and exit");
+            var version = OptionFactory.Create(false, "output version information and exit");
             parser.AddOption(version, "version");
 
             parser.UsageText = " touch [OPTION]... [FILE]...\n\n";
 
-            parser.Parse(args);
+            parser.Parse();
 
             Console.WriteLine("{0}: {1}", "a", accessTime.Value);
             Console.WriteLine("{0}: {1}", "no-create", noCreate.Value);

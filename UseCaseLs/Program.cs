@@ -91,16 +91,16 @@ namespace UseCaseLs
 
         static void Main(string[] args)
         {
-            Parser parser = new Parser();
+            CommandLine parser = new CommandLine(args);
 
-            var all = Parser.CreateOption(false, "do not ignore entries starting with .");
+            var all = OptionFactory.Create(false, "do not ignore entries starting with .");
             parser.AddOption(all, 'a', "all");
 
-            var author = Parser.CreateOption(false, "with -l, print the author or each file");
+            var author = OptionFactory.Create(false, "with -l, print the author or each file");
             parser.AddOption(author, "author");
 
             var blockSizeParam = new SizeParameter(true, "SIZE", new Size(0, SizeUnit.kB));
-            var blockSize = Parser.CreateOption(
+            var blockSize = OptionFactory.Create(
                 false,
                 "use SIZE-byte blocks; SIZE  may  be one of following: kB 1000, K 1024, MB 1000*1000,"+
                 "M 1024*1024, and so on for G, T, P, E, Z, Y.",
@@ -110,7 +110,7 @@ namespace UseCaseLs
 
             var colorParam = new EnumParameter<Color>(false, "WHEN", Color.Auto);
             colorParam.IgnoreCase = true;
-            var color = Parser.CreateOption(
+            var color = OptionFactory.Create(
                 false,
                 "control whether color is used to distinguish file types. " +
                 "WHEN may be 'never', 'always' or 'auto'",
@@ -119,7 +119,7 @@ namespace UseCaseLs
             parser.AddOption(color);
 
             var formatParam = new StringParameter(true, "WORD");
-            var format = Parser.CreateOption(
+            var format = OptionFactory.Create(
                 false,
                 "across  -x, commas -m, horizontal -x, long -l, single-column -1, verbose -l, vertical -C",
                 formatParam
@@ -129,7 +129,7 @@ namespace UseCaseLs
             var quotingStyleParam = new StringParameter(true, "WORD");
             var quotingStyles = new String[] { "literal", "locale", "shell", "shell-always", "c", "escape" };
             quotingStyleParam.AddConstraint(new StringEnumerationConstraint(quotingStyles, true));
-            var quotingStyle = Parser.CreateOption(
+            var quotingStyle = OptionFactory.Create(
                 false,
                 "use quoting style WORD for entry names: literal, locale, shell, shell-always, c, escape",
                 quotingStyleParam
@@ -138,12 +138,12 @@ namespace UseCaseLs
 
             var tabsizeParam = new IntParameter(true, "COLS", 8);
             tabsizeParam.AddConstraint(new LowerBoundConstraint(0));
-            var tabsize = Parser.CreateOption(false, "assume tab stops at each COLS instead of 8", tabsizeParam);
+            var tabsize = OptionFactory.Create(false, "assume tab stops at each COLS instead of 8", tabsizeParam);
             parser.AddOption(tabsize, 'T', "tabsize");
 
             parser.UsageText = " ls [OPTION]... [FILE]...\n\n";
 
-            parser.Parse(args);
+            parser.Parse();
 
             Console.WriteLine("{0}: {1}", "all", all.Value);
             Console.WriteLine("{0}: {1}", "author", author.Value);

@@ -12,6 +12,23 @@ namespace EasyOpt
             set;
         }
 
+        bool IsParameterRequired
+        {
+            get;
+        }
+
+        bool IsRequired
+        {
+            get;
+            set;
+        }
+
+        string UnParsedArgument
+        {
+            get;
+            set;
+        }
+
         void SetValue(String value);
     }
 
@@ -30,6 +47,25 @@ namespace EasyOpt
         public abstract void SetValue(String value);
 
         public bool IsRequired { get; set; }
+
+        public string UnParsedArgument
+        {
+            get;
+            set;
+        }
+
+        public bool IsParameterRequired
+        {
+            get
+            {
+                if (this.Parameter == null)
+                {
+                    return false;
+                }
+
+                return this.Parameter.IsRequired;
+            }
+        }
 
         public String UsageText { get; set; }
 
@@ -56,7 +92,7 @@ namespace EasyOpt
 
         public override void SetValue(string value)
         {
-            throw new Exception(); // TODO: on the command line, a parameter was passed to an option without a parameter
+            throw new ForbiddenParameterException(); // TODO: on the command line, a parameter was passed to an option without a parameter
         }
 
         public SimpleOption(bool isRequired, String usageText)
@@ -89,6 +125,20 @@ namespace EasyOpt
             if (parameter == null)
                 throw new Exception(); // TODO ?
             this.parameter = parameter;
+        }
+    }
+
+    /**
+    * Class thrown when a value is specified for a SimpleOption.
+    * SimpleOption does not have a parameter 
+    * 
+    */
+    public class ForbiddenParameterException : Exception
+    {
+        public ForbiddenParameterException()
+            : base()
+        {
+
         }
     }
 }

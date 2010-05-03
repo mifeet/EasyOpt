@@ -49,7 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\skola\MFF\predmety\Doporucene postupy v programovani\ukoly\2\svn3\EasyOpt\EasyOpt.csproj">
+    <ProjectReference Include="..\EasyOpt\EasyOpt.csproj">
       <Project>{1280F950-8E15-47B1-BCBF-C226B516375A}</Project>
       <Name>EasyOpt</Name>
     </ProjectReference>

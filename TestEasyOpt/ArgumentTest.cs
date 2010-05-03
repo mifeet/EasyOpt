@@ -69,7 +69,7 @@ namespace TestEasyOpt
         public void CreateTestDivision()
         {
             Argument actualArgument = Argument.Create("--");
-            Assert.AreEqual(ArgumentType.division, actualArgument.Type);
+            Assert.AreEqual(ArgumentType.Division, actualArgument.Type);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.Name);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -79,7 +79,7 @@ namespace TestEasyOpt
         public void CreateTestShortOption()
         {
             Argument actualArgument = Argument.Create("-v");
-            Assert.AreEqual(ArgumentType.shortOption, actualArgument.Type);
+            Assert.AreEqual(ArgumentType.ShortOption, actualArgument.Type);
             Assert.AreEqual("v", actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -89,7 +89,7 @@ namespace TestEasyOpt
         public void CreateTestShortOptionWithArgument()
         {
             Argument actualArgument = Argument.Create("-vparameter");
-            Assert.AreEqual(ArgumentType.shortOption, actualArgument.Type);
+            Assert.AreEqual(ArgumentType.ShortOption, actualArgument.Type);
             Assert.AreEqual("v", actualArgument.Name);
             Assert.AreEqual("parameter", actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -98,7 +98,7 @@ namespace TestEasyOpt
         public void CreateTestLongOption()
         {
             Argument actualArgument = Argument.Create("--v");
-            Assert.AreEqual(ArgumentType.longOption, actualArgument.Type);
+            Assert.AreEqual(ArgumentType.LongOption, actualArgument.Type);
             Assert.AreEqual("v", actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -108,7 +108,7 @@ namespace TestEasyOpt
         public void CreateTestLongOptionWithDash()
         {
             Argument actualArgument = Argument.Create("--long-option");
-            Assert.AreEqual(ArgumentType.longOption, actualArgument.Type);
+            Assert.AreEqual(ArgumentType.LongOption, actualArgument.Type);
             Assert.AreEqual("long-option", actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -118,7 +118,7 @@ namespace TestEasyOpt
         public void CreateTestLongOptionEqual()
         {
             Argument actualArgument = Argument.Create("--option=3test");
-            Assert.AreEqual(ArgumentType.longOption, actualArgument.Type);
+            Assert.AreEqual(ArgumentType.LongOption, actualArgument.Type);
             Assert.AreEqual("option", actualArgument.Name);
             Assert.AreEqual("3test", actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);

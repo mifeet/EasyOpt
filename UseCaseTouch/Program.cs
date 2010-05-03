@@ -58,7 +58,14 @@ namespace UseCaseTouch
 
             parser.UsageText = " touch [OPTION]... [FILE]...\n\n";
 
-            parser.Parse();
+            try
+            {
+                parser.Parse();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception {0}:\n{1}\n\n", e.GetType().Name, e.Message);
+            }
 
             Console.WriteLine("{0}: {1}", "a", accessTime.Value);
             Console.WriteLine("{0}: {1}", "no-create", noCreate.Value);
@@ -69,7 +76,7 @@ namespace UseCaseTouch
             Console.WriteLine("{0}: {1}", "version", version.Value);
 
             var arguments = parser.GetArguments();
-            Console.WriteLine("\nArguments: {0}", String.Join(" ", arguments));
+            Console.WriteLine("\nArguments: {0}", String.Join(" ", (String[]) arguments));
             Console.WriteLine("\nUsage text:");
             Console.WriteLine(parser.GetUsage());
             Console.ReadLine();

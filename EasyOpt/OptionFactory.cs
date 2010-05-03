@@ -9,12 +9,12 @@ namespace EasyOpt
      * Class that implements the pattern factory method. Used to retrieve instances of the class Option.
      */
 
-    class OptionFactory
+    public class OptionFactory
     {
         /**
          * Creates an option with no parameters.
          */
-        public static Option<bool> create(bool isRequired, String usageText)
+        public static Option<bool> Create(bool isRequired, String usageText)
         {
             return new SimpleOption(isRequired, usageText);
         }
@@ -22,7 +22,7 @@ namespace EasyOpt
         /**
          * Creates an option with parameter T.
          */
-        public static Option<T> create<T>(bool isRequired, String usageText, Parameter<T> parameter)
+        public static Option<T> Create<T>(bool isRequired, String usageText, Parameter<T> parameter)
         {
             return new ParameterOption<T>(isRequired, usageText, parameter);
         }

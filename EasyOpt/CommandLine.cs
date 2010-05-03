@@ -29,7 +29,7 @@ namespace EasyOpt
      * 3. programArgument: defines a program argument as an unparsed argument.
      *    Final state, can not go to any other phase.
      */ 
-    enum ParsePhase
+    internal enum ParsePhase
     {
         option, waitingForArgument, programArgument
     }
@@ -43,7 +43,7 @@ namespace EasyOpt
      * 3. Query: method XXX
      */
      
-    class CommandLine
+    public class CommandLine
     {
         //Object used to map option identifiers with option configurations
         private Dictionary<String, IOption> options;
@@ -66,7 +66,7 @@ namespace EasyOpt
             this.phase = ParsePhase.option;
         }
 
-        public void addOption(IOption option, params String[] names)
+        public void AddOption(IOption option, params String[] names)
         {
             // checkConfiguration(option); ?
             foreach (String name in names)
@@ -75,14 +75,14 @@ namespace EasyOpt
             }
         }
 
-        public void addOption(IOption option, char shortName)
+        public void AddOption(IOption option, char shortName)
         {
-            addOption(option, new String[] { shortName.ToString() });
+            AddOption(option, new String[] { shortName.ToString() });
         }
 
-        public void addOption(IOption option, char shortName, String longName)
+        public void AddOption(IOption option, char shortName, String longName)
         {
-            addOption(option, new String[] { shortName.ToString(), longName });
+            AddOption(option, new String[] { shortName.ToString(), longName });
         }
 
         public void Parse()
@@ -128,14 +128,16 @@ namespace EasyOpt
 
         public String[] GetArguments() // return non-option arguments
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return new String[] { };
         }
 
         public String UsageText { get; set; }
 
-        public String getUsage()
+        public String GetUsage()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return "";
         }
 
     }

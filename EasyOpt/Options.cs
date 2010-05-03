@@ -28,6 +28,16 @@ namespace EasyOpt
             set;
         }
 
+        string UsageText
+        {
+            get;
+        }
+
+        string ParameterUsageName
+        {
+            get;
+        }
+
         void SetValue(String value);
     }
 
@@ -44,6 +54,11 @@ namespace EasyOpt
         }
 
         public abstract bool IsParameterRequired
+        {
+            get;
+        }
+
+        public abstract string ParameterUsageName
         {
             get;
         }
@@ -87,6 +102,11 @@ namespace EasyOpt
             get { return false; }
         }
 
+        public override string ParameterUsageName
+        {
+            get { return ""; }
+        }
+
         public SimpleOption(bool isRequired, String usageText)
             : base(isRequired, usageText)
         { }
@@ -116,6 +136,11 @@ namespace EasyOpt
             get { return parameter.IsRequired; }
         }
 
+        public override string ParameterUsageName
+        {
+            get { return parameter.UsageName; }
+        }
+
         public ParameterOption(bool isRequired, String usageText, Parameter<T> parameter)
             : base(isRequired, usageText)
         {
@@ -133,7 +158,6 @@ namespace EasyOpt
     public class ForbiddenParameterException : Exception
     {
         public ForbiddenParameterException()
-            : base()
         {
 
         }

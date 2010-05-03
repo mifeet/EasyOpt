@@ -228,11 +228,11 @@ namespace EasyOpt
             }
             catch (ForbiddenParameterException)
             {
-                throw new ParseException("Option: " + option.UnParsedArgument + " can't have a parameter.");
+                throw new ParseException("Option: " + option.UnparsedArgument + " can't have a parameter.");
             }
             catch (Exception e)
             {
-                throw new ParseException("Parameter of option: " + option.UnParsedArgument + " is invalid.", e);
+                throw new ParseException("Parameter of option: " + option.UnparsedArgument + " is invalid.", e);
             }
         }
 
@@ -269,7 +269,7 @@ namespace EasyOpt
             }
         }
 
-        public String[] GetArguments() // return non-option arguments
+        public IList<String> GetArguments() // return non-option arguments
         {
             //throw new NotImplementedException();
             return new String[] { };

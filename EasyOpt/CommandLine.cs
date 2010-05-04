@@ -44,7 +44,7 @@ namespace EasyOpt
      */ 
     internal enum ParsePhase
     {
-        option, waitingForArgument, programArgument
+        Option, WaitingForArgument, ProgramArgument
     }
  
     /**
@@ -61,23 +61,31 @@ namespace EasyOpt
         //Object used to map option identifiers with option configurations
         private Dictionary<String, IOption> options;
         //Object that stores the arguments entered by the user
-        private String[] unParsedArguments;
+        private String[] unparsedArguments;
 
         //Object that stores the parse phase
         private ParsePhase phase;
 
         private List<string> programArguments = new List<string>();
-        
+
+        /**
+         * Returns the program arguments for the given command line arguments.
+         */ 
+        public String[] getProgramArguments()
+        {
+            return programArguments.ToArray();
+        }
+
         /**
          * Initializes a CommandLine instance.
          * 
          * Param: Paremeters received from the console.
          */
-        public CommandLine(String[] unParsedArguments)
+        public CommandLine(String[] unparsedArguments)
         {
             this.options = new Dictionary<string, IOption>();
-            this.unParsedArguments = unParsedArguments;
-            this.phase = ParsePhase.option;
+            this.unparsedArguments = unparsedArguments;
+            this.phase = ParsePhase.Option;
         }
 
         public void AddOption(IOption option, params String[] names)
@@ -103,17 +111,17 @@ namespace EasyOpt
         {
             IOption lastParsedOption = null;
 
-            foreach (string unParsedArgument in unParsedArguments)
+            foreach (string unParsedArgument in unparsedArguments)
             {
-                if (phase.Equals(ParsePhase.option))
+                if (phase.Equals(ParsePhase.Option))
                 {
                     lastParsedOption = parseOption(unParsedArgument);
                 }
-                else if (phase.Equals(ParsePhase.waitingForArgument))
+                else if (phase.Equals(ParsePhase.WaitingForArgument))
                 {
-                    parseWaitingForArgument(lastParsedOption, unParsedArgument);
+                    lastParsedOption = parseWaitingForArgument(lastParsedOption, unParsedArgument);
                 }
-                else if (phase.Equals(ParsePhase.programArgument))
+                else if (phase.Equals(ParsePhase.ProgramArgument))
                 {
                     this.programArguments.Add(unParsedArgument);
                 }
@@ -134,25 +142,34 @@ namespace EasyOpt
                 throw new ParseException("Internal error: lastParsedOption is null.");
             }
 
-            this.phase = ParsePhase.option;
+            this.phase = ParsePhase.Option;
 
             IOption option = null;
 
-            if (lastParsedOption.IsParameterRequired)
+            if (lastParsedOption.Argument.Type.Equals(ArgumentType.LongOption))
             {
-                setOptionValue(lastParsedOption, unParsedArgument);
-            }
-            else
-            {
-                try
+                if (lastParsedOption.IsParameterRequired)
                 {
                     setOptionValue(lastParsedOption, unParsedArgument);
                 }
-                catch (ParseException)
+                else
                 {
-                    option = parseOption(unParsedArgument);
+                    try
+                    {
+                        setOptionValue(lastParsedOption, unParsedArgument);
+                    }
+                    catch (ParseException)
+                    {
+                        option = parseOption(unParsedArgument);
+                    }
                 }
             }
+            else
+            {
+                option = parseOption(unParsedArgument);
+            }
+            
+
             return option;
         }
 
@@ -163,7 +180,7 @@ namespace EasyOpt
          */ 
         private void checkParserFinalState(IOption lastParsedOption)
         {
-            if (this.phase.Equals(ParsePhase.waitingForArgument) && lastParsedOption.IsParameterRequired)
+            if (this.phase.Equals(ParsePhase.WaitingForArgument) && lastParsedOption.IsParameterRequired)
             {
                 //TODO discuss a data structure to retrieve synonyms to options, maybe another hash table.
                 throw new ParseException ("Missing argument for option: ");
@@ -181,13 +198,13 @@ namespace EasyOpt
             Argument argument = Argument.Create(unParsedArgument);
             IOption option = null;
 
-            if (argument.Type.Equals(ArgumentType.division))
+            if (argument.Type.Equals(ArgumentType.Division))
             {
-                this.phase = ParsePhase.programArgument;
+                this.phase = ParsePhase.ProgramArgument;
             }
-            else if (argument.Type.Equals(ArgumentType.programArgument))
+            else if (argument.Type.Equals(ArgumentType.ProgramArgument))
             {
-                this.phase = ParsePhase.programArgument;
+                this.phase = ParsePhase.ProgramArgument;
                 this.programArguments.Add(argument.ProgramArgument);
             }
             else if (argument.Type.IsOption())
@@ -196,6 +213,7 @@ namespace EasyOpt
 
                 option = options[argument.Name];
                 option.IsPresent = true;
+                option.Argument = argument;
 
                 if (option.IsParameterRequired)
                 {
@@ -204,7 +222,7 @@ namespace EasyOpt
 
                 if (argument.Parameter == null)
                 {
-                    this.phase = ParsePhase.waitingForArgument;
+                    this.phase = ParsePhase.WaitingForArgument;
                 }
                 else
                 {
@@ -228,11 +246,11 @@ namespace EasyOpt
             }
             catch (ForbiddenParameterException)
             {
-                throw new ParseException("Option: " + option.UnparsedArgument + " can't have a parameter.");
+                throw new ParseException("Option: " + option.Argument.UnparsedText + " can't have a parameter.");
             }
             catch (Exception e)
             {
-                throw new ParseException("Parameter of option: " + option.UnparsedArgument + " is invalid.", e);
+                throw new ParseException("Parameter of option: " + option.Argument.UnparsedText + " is invalid.", e);
             }
         }
 
@@ -261,7 +279,7 @@ namespace EasyOpt
         {
             if (
                 argument.Parameter == null && 
-                argument.Type.Equals(ArgumentType.shortOption)
+                argument.Type.Equals(ArgumentType.ShortOption)
             )
             {
                 throw new ParseException("Option: " + argument.Name + " requires a parameter.");

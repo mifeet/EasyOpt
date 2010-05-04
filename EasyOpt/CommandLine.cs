@@ -10,6 +10,10 @@ namespace EasyOpt
      */
     public abstract class EasyOptException : Exception
     {
+        public EasyOptException()
+            : base()
+        { }
+
         public EasyOptException(string message)
             : base(message)
         { }
@@ -102,17 +106,17 @@ namespace EasyOpt
             this.phase = ParsePhase.Option;
         }
 
-        public void AddOption(IOption option, params String[] names)
+        public void AddOption<T>(Option<T> option, params String[] names)
         {
             this.optionContainer.Add(option, names);
         }
 
-        public void AddOption(IOption option, char shortName)
+        public void AddOption<T>(Option<T> option, char shortName)
         {
             this.optionContainer.Add(option, new String[] { shortName.ToString() });
         }
 
-        public void AddOption(IOption option, char shortName, String longName)
+        public void AddOption<T>(Option<T> option, char shortName, String longName)
         {
             this.optionContainer.Add(option, new String[] { shortName.ToString(), longName });
         }

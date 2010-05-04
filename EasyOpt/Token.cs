@@ -9,12 +9,12 @@ namespace EasyOpt
     /**
      * Enumeration with the possible kinds of tokens that can be parsed.
      */ 
-    public enum TokenType
+    internal enum TokenType
     {
         Division, ShortOption, LongOption, ProgramArgument
     }
 
-    public static class Extensions
+    internal static class Extensions
     {
         public static bool IsOption(this TokenType tokenType)
         {
@@ -25,7 +25,7 @@ namespace EasyOpt
         }
     }
 
-    public interface IToken
+    internal interface IToken
     {
         IOption Option
         {
@@ -47,7 +47,7 @@ namespace EasyOpt
     /**
      * Class that represents the data stored inside a token received through an argument of the command line.
      */
-    class Token : IToken
+    internal class Token : IToken
     {
         /** String that represents the division argument between options and program arguments */
         private const string divisionTokenString = "--";

@@ -195,12 +195,11 @@ namespace EasyOpt
         /**
          * Setter for parameter value.
          * This method shouldn't be called since SimpleOption has no parameter.
+         * @throw ForbiddenParameterOption
          */
         protected override void setValue(string value)
         {
-            // TODO: perhaps it would be better to throw the exception in the parser after all 
-            // because the parser has information about the option name
-            throw new ForbiddenParameterException(""); // TODO: on the command line, a parameter was passed to an option without a parameter
+            throw new ForbiddenParameterException();
         }
 
         /**
@@ -228,6 +227,9 @@ namespace EasyOpt
         { }
     }
 
+    /**
+     * Class representing an option with parameter of type T.
+     */
     internal class ParameterOption<T> : Option<T>
     {
         /**
@@ -301,42 +303,45 @@ namespace EasyOpt
     }
 
     /**
-     * Class thrown when a value is specified for a SimpleOption.
+     * Class thrown when a parameter value is specified for a SimpleOption.
      * SimpleOption does not have a parameter 
-     * 
      */
     public class ForbiddenParameterException : EasyOptException
-    {
-        public ForbiddenParameterException(string message)
-            : base(message)
-        { }
+    { }
 
-        public ForbiddenParameterException(string message, Exception innerException)
-            : base(message, innerException)
-        { }
-    }
-
+    /**
+     * Interface for container of option objects.
+     */
     internal interface IOptionContainer
     {
-        void Add(IOption option, params String[] names);
-
-        void Add(IOption option, char shortName);
-
-        void Add(IOption option, char shortName, String longName);
+        void Add(IOption option, String[] names);
 
         IOption FindByName(string name);
 
         bool ContainsName(string name);
 
-        List<string> ListUniqueNames();
+        IEnumerable<string> ListUniqueNames();
 
         string[] FindSynonymsByName(string name);
     }
 
+    /**
+     * Container for option objects.
+     * Stores both options as IOption objects and lists of synonyms,
+     * both can be accessed by name.
+     */
     internal class OptionContainer : IOptionContainer
     {
+        /**
+         * Dictionary containing all IOption objects passed by
+         * CommandLine.AddOption() indexed by all option synonymous names.
+         */
         private Dictionary<String, IOption> options;
 
+        /**
+         * Dictionary containg lists of synonymous names of options
+         * indexed by the first synonym in the list.
+         */
         private Dictionary<String, String[]> names;
 
         public OptionContainer()
@@ -345,20 +350,21 @@ namespace EasyOpt
             this.names = new Dictionary<string, string[]>();
         }
 
-        public List<string> ListUniqueNames()
+        /**
+         * 
+         */
+        public IEnumerable<String> ListUniqueNames()
         {
-            return new List<string>(this.names.Keys);
-
+            return this.names.Keys;
         }
 
-        public string[] FindSynonymsByName(string name)
+        /**
+         * Add an option to the container using names as its
+         * option's synonymous option names.
+         */
+        public void Add(IOption option, String[] names)
         {
-            return this.names[name];
-        }
-
-        public void Add(IOption option, params String[] names)
-        {
-            // checkConfiguration(option); ?
+            // TODO checkConfiguration(option);
             foreach (String name in names)
             {
                 this.options.Add(name, option);
@@ -367,14 +373,9 @@ namespace EasyOpt
             this.names.Add(names[0], names);
         }
 
-        public void Add(IOption option, char shortName)
+        public string[] FindSynonymsByName(string name)
         {
-            Add(option, new String[] { shortName.ToString() });
-        }
-
-        public void Add(IOption option, char shortName, String longName)
-        {
-            Add(option, new String[] { shortName.ToString(), longName });
+            return this.names[name];
         }
 
         public IOption FindByName(string name)
@@ -387,5 +388,5 @@ namespace EasyOpt
             return this.options.ContainsKey(name);
         }
     }
-
 }
+

@@ -106,16 +106,38 @@ namespace EasyOpt
             this.phase = ParsePhase.Option;
         }
 
+        /**
+         * Add option using names as its synonymous option names.
+         * Names one-character long are treated as short options (e.g. -v), 
+         * longer names are treated as long option names (e.g. --verbose)
+         * 
+         * At least one name for the option must be listed.
+         * @param option Object representing an option. Must not be null.
+         * @param names List of synonymous names for the option. One-character long name
+         *      is treated as a short option name, longer name is treated as a long option name.
+         *      Must not be empty.
+         */
         public void AddOption<T>(Option<T> option, params String[] names)
         {
             this.optionContainer.Add(option, names);
         }
 
+        /**
+         * @see AddOption< T >(Option<T> option, params String[] names)
+         * @param option Object representing an option. Must not be null.
+         * @param shortName Short option name
+         */
         public void AddOption<T>(Option<T> option, char shortName)
         {
             this.optionContainer.Add(option, new String[] { shortName.ToString() });
         }
 
+        /**
+         * @see AddOption< T >(Option<T> option, params String[] names)
+         * @param option Object representing an option. Must not be null.
+         * @param shortName Short option name.
+         * @param longName Long option name.
+         */
         public void AddOption<T>(Option<T> option, char shortName, String longName)
         {
             this.optionContainer.Add(option, new String[] { shortName.ToString(), longName });
@@ -151,7 +173,7 @@ namespace EasyOpt
          */ 
         private void checkRequiredOptions()
         {
-            List<string> uniqueNames = this.optionContainer.ListUniqueNames();
+            IEnumerable<string> uniqueNames = this.optionContainer.ListUniqueNames();
 
             foreach (string uniqueName in uniqueNames)
             {

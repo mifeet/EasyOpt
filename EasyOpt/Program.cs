@@ -9,7 +9,6 @@ namespace EasyOpt
     {
         static void Main(string[] args)
         {
-
         }
 
 

@@ -10,6 +10,14 @@ namespace EasyOpt
      * Use this class for creating Option<T> objects. A proper instance is returned
      * based on the type of option's parameter.
      * Options without a parameter are represented as Option<bool>.
+     * 
+     * Example of usage:
+     * var outputParam = new StringParameter(true, "FILE");
+     * var output = OptionFactory.Create(false, "Output to FILE.", outputParam);
+     *  // type of output.Value is String
+     * 
+     * var help = OptionFactory.Create(false, "Print a usage message.");
+     *  // type of help.Value is bool
      */
     public class OptionFactory
     {

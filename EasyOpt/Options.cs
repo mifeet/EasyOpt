@@ -22,7 +22,7 @@ namespace EasyOpt
             get;
         }
 
-        string UnparsedArgument
+        IArgument Argument
         {
             get;
             set;
@@ -67,11 +67,11 @@ namespace EasyOpt
 
         public bool IsRequired { get; set; }
 
-        public string UnparsedArgument { get; set; }
-
         public String UsageText { get; set; }
 
         public bool IsPresent { get; set; }
+
+        public IArgument Argument { get; set; }
 
         internal Option(bool isRequired, String usageText)
         {

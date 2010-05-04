@@ -14,17 +14,26 @@ namespace EasyOpt
         Division, ShortOption, LongOption, ProgramArgument
     }
 
-    internal static class Extensions
+    /**
+     * Class providing extension methods for TokenType.
+     */
+    internal static class TokenExtensions
     {
+        /**
+         * Returns true when tokenType represents an option, false otherwise
+         */
         public static bool IsOption(this TokenType tokenType)
         {
             bool isAnOption = tokenType.Equals(TokenType.ShortOption) || 
                 tokenType.Equals(TokenType.LongOption);
-
+            
             return isAnOption; 
         }
     }
 
+    /**
+     * Interface for a 
+     */
     internal interface IToken
     {
         IOption Option
@@ -61,6 +70,7 @@ namespace EasyOpt
         /** Stores the unparsed text of a given argument */
         private string unparsedText;
 
+        /** Gets the unparsed text of a given argument */
         public string UnparsedText
         {
             get
@@ -69,6 +79,7 @@ namespace EasyOpt
             }
         }
 
+        /** Gets name identifying a corresponding option */
         public string Name
         {
             get
@@ -77,9 +88,10 @@ namespace EasyOpt
             }
         }
 
-        /** Reference to token that originated the option */
+        /** Reference to the option corresponding to this token */
         private IOption option;
 
+        /** Gets reference to the option corresponding to this token */
         public IOption Option
         {
             get
@@ -92,10 +104,10 @@ namespace EasyOpt
             }
         }
 
-
-        /** String representation of an option's parameter */
+        /** String representation of the corresponding option's parameter */
         private string parameter;
 
+        /** Gets string representation of the corresponding option's parameter */
         public string Parameter
         {
             get
@@ -104,9 +116,10 @@ namespace EasyOpt
             }
         }
 
-        /** String that stores the program argument */
+        /** String that stores the program argument (a non-optional argument) */
         private string programArgument;
 
+        /** Gets program argument (a non-optional argument) */
         public string ProgramArgument
         {
             get
@@ -115,9 +128,10 @@ namespace EasyOpt
             }
         }
 
-        /** Type of argument */
+        /** Type of the token */
         private TokenType type;
 
+        /** Gets type of the token */
         public TokenType Type
         {
             get
@@ -125,10 +139,10 @@ namespace EasyOpt
                 return this.type;
             }
         }
-        //Regular expression of a short name
+        /** Regular expression of a short name */
         private const string shortName = "[a-zA-Z0-9]+";
 
-        //Regular expression of a long name
+        /** Regular expression of a long name */
         private const string longName = "[a-zA-Z0-9][a-zA-Z0-9-]+";
 
         /** Object used to check whether a given short name is valid */
@@ -149,8 +163,10 @@ namespace EasyOpt
         /** Offset used parse the name for the long option arguent */
         private const int longPatternOffset = 2;
 
-        /** Constructor that initializes an instance.
-         *  Method Create() should be called to create an instance.*/
+        /**
+         * Constructor that initializes an instance.
+         * Method Create() should be called to create an instance.
+         */
         private Token()
         {
             this.name = null;
@@ -160,7 +176,9 @@ namespace EasyOpt
         }
 
         /**
-         * Factory method to create an instance given an unparsed argument.
+         * Factory method to create list of tokens from a unparsed argument value.
+         * @param unparsedArgument A single unparsed argument from the commnad line.
+         * @param optionContainer Container object of all defined options.
          */
         public static List<Token> Create(string unparsedArgument, IOptionContainer optionContainer)
         {
@@ -192,9 +210,9 @@ namespace EasyOpt
 
                     tokens.Add(shortOptionToken);
 
-                    if (!(option is SimpleOption))
+                    if (option.HasParameter)
                     {
-                        if (i + 1 < unparsedArgument.Length)
+                        if ((i + 1) < unparsedArgument.Length)
                         {
                             shortOptionToken.parameter = unparsedArgument.Substring(i + 1);
                         }
@@ -241,8 +259,9 @@ namespace EasyOpt
         }
 
         /**
-         * Checks that the argument's name is valid
+         * Checks that the options's name is valid (a corresponding option object exists)
          * @param name, name received from the arguments in the command line. 
+         * @param optionContainer Container objec of all defined options.
          * @throw ParseException if the name is not valid
          */
         private static void checkOptionName(string name, IOptionContainer optionContainer)

@@ -11,37 +11,40 @@ namespace EasyOpt
      */
     internal interface IOption
     {
-        bool IsPresent
-        {
-            get;
-            set;
-        }
+        /**
+         * True, if the option is within command line arguments, false otherwise.
+         */
+        bool IsPresent { get; set; }
 
-        bool IsParameterRequired
-        {
-            get;
-        }
+        /**
+         * True, if the option has a required parameter, false otherwise.
+         */
+        bool IsParameterRequired { get; }
 
-        bool IsRequired
-        {
-            get;
-        }
+        /**
+         * True, if the option is required to appear on the commnad line
+         */
+        bool IsRequired { get; }
 
-        bool HasParameter
-        {
-            get;
-        }
+        /**
+         * Returns true if the option has a parameter, false otherwise.
+         */
+        bool HasParameter { get; }
 
-        string UsageText
-        {
-            get;
-        }
+        /**
+         * Description of option usage.
+         */
+        string UsageText { get; }
 
-        string ParameterUsageName
-        {
-            get;
-        }
+        /**
+         * Returns usage name of the parameter, or an empty string if
+         * the option has no parameter.
+         */
+        string ParameterUsageName { get; }
 
+        /**
+         * Sets parameter value.
+         */
         void SetValue(String value);
     }
 
@@ -64,19 +67,13 @@ namespace EasyOpt
          * If the option has a parameter, get its value, otherwise
          * return whether the option is present on the command line
          */
-        public abstract T Value
-        {
-            get;
-        }
+        public abstract T Value { get; }
 
         /**
          * Return reference to the corresponding parameter object.
          * If the option has no parameter, returns null.
          */
-        public abstract Parameter<T> Parameter
-        {
-            get;
-        }
+        public abstract Parameter<T> Parameter { get; }
 
         /**
          * Returns true if the option has a parameter, false otherwise.
@@ -86,19 +83,13 @@ namespace EasyOpt
         /**
          * True, if the option has a required parameter, false otherwise.
          */
-        public abstract bool IsParameterRequired
-        {
-            get;
-        }
+        public abstract bool IsParameterRequired { get; }
 
         /**
          * Returns usage name of the parameter, or an empty string if
          * the option has no parameter.
          */
-        public abstract string ParameterUsageName
-        {
-            get;
-        }
+        public abstract string ParameterUsageName { get; }
 
         /**
          * True, if the option is required to appear on the commnad line
@@ -143,6 +134,8 @@ namespace EasyOpt
          * Sets parameter value.
          * Implemented only for internal interface IOption in order
          * to hide the setter from the user.
+         * @throw ParameterConversionException
+         * @throw ForbiddenParameterException
          */
         void IOption.SetValue(String value)
         {
@@ -264,6 +257,7 @@ namespace EasyOpt
 
         /**
          * Sets value of the parameter on the command line.
+         * @throw ParameterConversionException
          */
         protected override void setValue(string value)
         {
@@ -314,14 +308,35 @@ namespace EasyOpt
      */
     internal interface IOptionContainer
     {
+        /**
+         * Add an option to the container using names as its
+         * option's synonymous option names.
+         * @param option Option object
+         * @param names List of synonymous names for the option.
+         */
         void Add(IOption option, String[] names);
 
+        /**
+         * Return option by its option name
+         * @param name option name
+         */
         IOption FindByName(string name);
 
+        /**
+         * Returns true if the container contains an option with the specified name,
+         * false otherwise.
+         * @param name option name
+         */
         bool ContainsName(string name);
 
+        /**
+         * Returns collection of the first option synonym for all options.
+         */
         IEnumerable<string> ListUniqueNames();
 
+        /**
+         * Returns list of synonyms for the option's first synonymous name.
+         */
         string[] FindSynonymsByName(string name);
     }
 
@@ -339,11 +354,14 @@ namespace EasyOpt
         private Dictionary<String, IOption> options;
 
         /**
-         * Dictionary containg lists of synonymous names of options
+         * Dictionary containing lists of synonymous names of options
          * indexed by the first synonym in the list.
          */
         private Dictionary<String, String[]> names;
 
+        /**
+         * Initialize data containers
+         */
         public OptionContainer()
         {
             this.options = new Dictionary<string, IOption>();
@@ -351,7 +369,7 @@ namespace EasyOpt
         }
 
         /**
-         * 
+         * Returns collection of the first option synonym for all options.
          */
         public IEnumerable<String> ListUniqueNames()
         {
@@ -361,6 +379,8 @@ namespace EasyOpt
         /**
          * Add an option to the container using names as its
          * option's synonymous option names.
+         * @param option Option object
+         * @param names List of synonymous names for the option.
          */
         public void Add(IOption option, String[] names)
         {
@@ -373,16 +393,28 @@ namespace EasyOpt
             this.names.Add(names[0], names);
         }
 
+        /**
+         * Returns list of synonyms for the option's first synonymous name.
+         */
         public string[] FindSynonymsByName(string name)
         {
             return this.names[name];
         }
 
+        /**
+         * Return option by its option name
+         * @param name option name
+         */
         public IOption FindByName(string name)
         {
             return this.options[name];
         }
 
+        /**
+         * Returns true if the container contains an option with the specified name,
+         * false otherwise.
+         * @param name option name
+         */
         public bool ContainsName(string name)
         {
             return this.options.ContainsKey(name);

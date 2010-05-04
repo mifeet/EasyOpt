@@ -41,8 +41,8 @@ namespace EasyOpt
          * @param message exception's detail message
          * @param exception inner exception
          */
-        public ParseException(string message, Exception exception)
-            : base(message, exception)
+        public ParseException(string message, Exception innerException)
+            : base(message, innerException)
         { }
     }
 
@@ -165,23 +165,26 @@ namespace EasyOpt
             this.optionContainer.Add(option, new String[] { shortName.ToString(), longName });
         }
 
+        /**
+         * @throw ParseException
+         */
         public void Parse()
         {
             Token lastParsedToken = null;
 
-            foreach (string unParsedArgument in unparsedArguments)
+            foreach (string unparsedArgument in unparsedArguments)
             {
                 if (phase.Equals(ParsePhase.Option))
                 {
-                    lastParsedToken = parseOption(unParsedArgument);
+                    lastParsedToken = parseOption(unparsedArgument);
                 }
                 else if (phase.Equals(ParsePhase.WaitingForArgument))
                 {
-                    lastParsedToken = parseWaitingForArgument(lastParsedToken, unParsedArgument);
+                    lastParsedToken = parseWaitingForArgument(lastParsedToken, unparsedArgument);
                 }
                 else if (phase.Equals(ParsePhase.ProgramArgument))
                 {
-                    this.programArguments.Add(unParsedArgument);
+                    this.programArguments.Add(unparsedArgument);
                 }
             }
 
@@ -209,11 +212,11 @@ namespace EasyOpt
         }
 
         /**
-         * Attempts to parse the given unParsedArgument as a parameter for the last parsedOption.
+         * Attempts to parse the given unparsedArgument as a parameter for the last parsedOption.
          * In case is optional creates a new Option.
          * @throw ParseException if it is not possible to parse the argument and the parameter is required.
          */ 
-        private Token parseWaitingForArgument(Token lastParsedToken, string unParsedArgument)
+        private Token parseWaitingForArgument(Token lastParsedToken, string unparsedArgument)
         {
             if (lastParsedToken == null)
             {
@@ -228,23 +231,23 @@ namespace EasyOpt
             {
                 if (lastParsedToken.Option.IsParameterRequired)
                 {
-                    setOptionValue(lastParsedToken, unParsedArgument);
+                    setOptionValue(lastParsedToken, unparsedArgument);
                 }
                 else
                 {
                     try
                     {
-                        setOptionValue(lastParsedToken, unParsedArgument);
+                        setOptionValue(lastParsedToken, unparsedArgument);
                     }
                     catch (ParseException)
                     {
-                        currentToken = parseOption(unParsedArgument);
+                        currentToken = parseOption(unparsedArgument);
                     }
                 }
             }
             else
             {
-                currentToken = parseOption(unParsedArgument);
+                currentToken = parseOption(unparsedArgument);
             }
             
 
@@ -270,11 +273,11 @@ namespace EasyOpt
          * 
          * @return Option associated with the argument.
          */ 
-        private Token parseOption(string unParsedArgument)
+        private Token parseOption(string unparsedArgument)
         {
             Token lastParsedToken = null;
             
-            List<Token> tokens = Token.Create(unParsedArgument, optionContainer);
+            List<Token> tokens = Token.Create(unparsedArgument, optionContainer);
 
             foreach (Token token in tokens)
             {
@@ -329,11 +332,11 @@ namespace EasyOpt
             {
                 token.Option.SetValue(value);
             }
-            catch (ForbiddenParameterException)
+            catch (ForbiddenParameterException e)
             {
-                throw new ParseException("Option: " + token.UnparsedText + " can't have a parameter.");
+                throw new ParseException("Option: " + token.UnparsedText + " can't have a parameter.", e);
             }
-            catch (Exception e)
+            catch (ParameterConversionException e)
             {
                 throw new ParseException("Parameter of option: " + token.UnparsedText + " is invalid.", e);
             }

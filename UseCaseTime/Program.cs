@@ -70,7 +70,7 @@ namespace UseCaseTime
             Console.WriteLine("{0}: {1}", "quiet", quiet.Value);
             Console.WriteLine("{0}: {1}", "version", version.Value);
 
-            var arguments = parser._GetArguments();
+            var arguments = parser.GetArguments();
             Console.WriteLine("\nArguments: {0}", String.Join(" ", (String[]) arguments));
             Console.WriteLine("\nUsage text:");
             Console.WriteLine(parser.GetUsage());

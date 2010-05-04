@@ -153,6 +153,7 @@ namespace EasyOpt
          * This method is intended to be called by Parser only.
          * @param stringValue Parameter value as string. Must not be null.
          * @throw ArgumentNullException
+         * @throw ParameterConversionException
          */
         internal void SetValue(String stringValue)
         {

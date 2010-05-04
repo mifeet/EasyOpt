@@ -94,22 +94,28 @@ namespace EasyOpt
         private IEqualityComparer<String> comparer;
 
         /**
-         * @param acceptedValues Collection of accepted values.
-         * @param Comparer used to compare arguments to the list of accepted values.
+         * @param acceptedValues Collection of accepted values. Must not be null.
+         * @param Comparer used to compare arguments to the list of accepted values. Must not be null.
+         * @throw ArgumentNullException thrown when either of the parameters is null
          */
         public StringEnumerationConstraint(IEnumerable<String> acceptedValues, IEqualityComparer<String> comparer)
         {
             if (acceptedValues == null)
             {
-                throw new Exception(); // TODO
+                throw new ArgumentNullException("acceptedValues");
+            }
+            if (comparer == null)
+            {
+                throw new ArgumentNullException("comparer");
             }
             this.acceptedValues = acceptedValues;
             this.comparer = comparer;
         }
 
         /**
-         * @param acceptedValues Collection of accepted values.
+         * @param acceptedValues Collection of accepted values. Must not be null.
          * @param If true, ignore case; otherwise, regard case.
+         * @throw ArgumentNullException thrown when acceptedValues is null
          */
         public StringEnumerationConstraint(IEnumerable<String> acceptedValues, bool ignoreCase)
             : this(

@@ -23,11 +23,8 @@ namespace EasyOpt
         { }
     }
 
-
-
     /**
      * Class thrown when there is an error parsing an argument.
-     * 
      */
     public class ParseException : EasyOptException
     {
@@ -73,23 +70,32 @@ namespace EasyOpt
      * 2. Parse: method parse()
      * 3. Query: method XXX
      */
-     
     public class CommandLine
     {
-        //Object used to map option identifiers with option configurations
+        /**
+         * Container of all option objects passed by AddOption< T >()
+         */
         private IOptionContainer optionContainer;
-        //Object that stores the arguments entered by the user
+
+        /**
+         * Unparsed arguments from the command line
+         */
         private String[] unparsedArguments;
 
-        //Object that stores the parse phase
+        /**
+         * Stores the parse phase
+         */
         private ParsePhase phase;
 
+        /**
+         * List of non-option arguments.
+         */
         private List<string> programArguments = new List<string>();
 
         /**
-         * Returns the program arguments for the given command line arguments.
+         * Returns non-option arguments
          */ 
-        public String[] getProgramArguments()
+        public String[] GetArguments()
         {
             return programArguments.ToArray();
         }
@@ -97,13 +103,29 @@ namespace EasyOpt
         /**
          * Initializes a CommandLine instance.
          * 
-         * Param: Paremeters received from the console.
+         * @param unparsedArguments Array of arguments from the command line.
          */
         public CommandLine(String[] unparsedArguments)
         {
             this.optionContainer = new OptionContainer();
             this.unparsedArguments = unparsedArguments;
             this.phase = ParsePhase.Option;
+        }
+
+        /**
+         * Description of program usage.
+         */
+        public String UsageDescription { get; set; }
+
+        /**
+         * Returns usage message.
+         * Usage message consists of UsageDescription and description
+         * of all options passed by AddOption< T >() and their synonyms.
+         */
+        public String GetUsage()
+        {
+            //throw new NotImplementedException();
+            return "";
         }
 
         /**
@@ -169,7 +191,7 @@ namespace EasyOpt
         }
 
         /**
-         * Check that all required options are given in the command line arguments.
+         * Check that all required options are given within the command line arguments.
          */ 
         private void checkRequiredOptions()
         {
@@ -337,19 +359,6 @@ namespace EasyOpt
             }
         }
 
-        public IList<String> GetArguments() // return non-option arguments
-        {
-            //throw new NotImplementedException();
-            return new String[] { };
-        }
-
-        public String UsageText { get; set; }
-
-        public String GetUsage()
-        {
-            //throw new NotImplementedException();
-            return "";
-        }
 
     }
 }

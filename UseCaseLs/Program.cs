@@ -141,7 +141,7 @@ namespace UseCaseLs
             var tabsize = OptionFactory.Create(false, "assume tab stops at each COLS instead of 8", tabsizeParam);
             parser.AddOption(tabsize, 'T', "tabsize");
 
-            parser.UsageText = " ls [OPTION]... [FILE]...\n\n";
+            parser.UsageDescription = " ls [OPTION]... [FILE]...\n\n";
 
             try
             {
@@ -160,7 +160,7 @@ namespace UseCaseLs
             Console.WriteLine("{0}: {1}", "quoting-style", quotingStyle.Value);
             Console.WriteLine("{0}: {1}", "tabsize", tabsize.Value);
 
-            var arguments = parser.GetArguments();
+            var arguments = parser._GetArguments();
             Console.WriteLine("\nArguments: {0}", String.Join(" ", (String[]) arguments));
             Console.WriteLine("\nUsage text:");
             Console.WriteLine(parser.GetUsage());

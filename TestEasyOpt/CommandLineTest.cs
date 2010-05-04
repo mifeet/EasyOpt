@@ -271,7 +271,7 @@ namespace TestEasyOpt
 
             commandLine.Parse();
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(3, arguments.Length);
             Assert.AreEqual("334", arguments[0]);
@@ -293,7 +293,7 @@ namespace TestEasyOpt
 
             Assert.AreEqual(true, intOption.IsPresent);
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(3, arguments.Length);
             Assert.AreEqual("334", arguments[0]);
@@ -315,7 +315,7 @@ namespace TestEasyOpt
 
             Assert.AreEqual(true, intOption.IsPresent);
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(3, arguments.Length);
             Assert.AreEqual("334", arguments[0]);
@@ -336,7 +336,7 @@ namespace TestEasyOpt
 
             Assert.AreEqual(true, intOption.IsPresent);
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(2, arguments.Length);
             Assert.AreEqual("28", arguments[0]);
@@ -356,7 +356,7 @@ namespace TestEasyOpt
 
             Assert.AreEqual(true, intOption.IsPresent);
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(3, arguments.Length);
             Assert.AreEqual("334", arguments[0]);
@@ -378,7 +378,7 @@ namespace TestEasyOpt
             Assert.AreEqual(true, intOption.IsPresent);
             Assert.AreEqual(334, intOption.Value);
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(2, arguments.Length);
             Assert.AreEqual("28", arguments[0]);
@@ -400,7 +400,7 @@ namespace TestEasyOpt
             Assert.AreEqual(true, intOption.IsPresent);
             Assert.AreEqual(334, intOption.Value);
 
-            String[] arguments = commandLine.getProgramArguments();
+            String[] arguments = commandLine.GetArguments();
 
             Assert.AreEqual(2, arguments.Length);
             Assert.AreEqual("28", arguments[0]);

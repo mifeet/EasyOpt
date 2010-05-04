@@ -136,7 +136,7 @@ namespace TestEasyOpt
         }
 
         [TestMethod]
-        public void TestParseIntOptionalParameter()
+        public void TestParseIntOptionalParameterMissing()
         {
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
 
@@ -149,6 +149,181 @@ namespace TestEasyOpt
             commandLine.Parse();
 
             Assert.AreEqual(0, intOption.Value);
+        }
+
+        [TestMethod]
+        public void TestParseIntOptionalParameter()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-i334" });
+
+            commandLine.AddOption(intOption, 'i');
+
+            commandLine.Parse();
+
+            Assert.AreEqual(334, intOption.Value);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParseException), "Unknown option.")]
+        public void TestParseUnknownOption()
+        {
+            IntParameter intParameter = new IntParameter(true, "Integer parameter");
+
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-f334" });
+
+            commandLine.AddOption(intOption, 'i');
+
+            commandLine.Parse();
+
+        }
+
+        [TestMethod]
+        public void TestParseOnlyProgramArguments()
+        {
+            CommandLine commandLine = new CommandLine(new string[] { "334", "28", "a" });
+
+            commandLine.Parse();
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(3, arguments.Length);
+            Assert.AreEqual("334", arguments[0]);
+            Assert.AreEqual("28", arguments[1]);
+            Assert.AreEqual("a", arguments[2]);
+        }
+
+        [TestMethod]
+        public void TestParseShortOptionAndProgramArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-i", "334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i');
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(3, arguments.Length);
+            Assert.AreEqual("334", arguments[0]);
+            Assert.AreEqual("28", arguments[1]);
+            Assert.AreEqual("a", arguments[2]);
+        }
+
+        [TestMethod]
+        public void TestParseShortOptionDivisionAndProgramArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-i", "--", "334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i');
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(3, arguments.Length);
+            Assert.AreEqual("334", arguments[0]);
+            Assert.AreEqual("28", arguments[1]);
+            Assert.AreEqual("a", arguments[2]);
+        }
+
+        [TestMethod]
+        public void TestParseLongOptionAndProgramArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+            CommandLine commandLine = new CommandLine(new string[] { "--integer", "334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i', "integer");
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(2, arguments.Length);
+            Assert.AreEqual("28", arguments[0]);
+            Assert.AreEqual("a", arguments[1]);
+        }
+
+        [TestMethod]
+        public void TestParseLongOptionDivisionAndProgramArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+            CommandLine commandLine = new CommandLine(new string[] { "--integer", "--", "334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i', "integer");
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(3, arguments.Length);
+            Assert.AreEqual("334", arguments[0]);
+            Assert.AreEqual("28", arguments[1]);
+            Assert.AreEqual("a", arguments[2]);
+        }
+
+        [TestMethod]
+        public void TestParseLongOptionWithEqualAndProgramArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+            CommandLine commandLine = new CommandLine(new string[] { "--integer=334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i', "integer");
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+            Assert.AreEqual(334, intOption.Value);
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(2, arguments.Length);
+            Assert.AreEqual("28", arguments[0]);
+            Assert.AreEqual("a", arguments[1]);
+        }
+
+        [TestMethod]
+        public void TestParseArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "--integer=334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i', "integer");
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+            Assert.AreEqual(334, intOption.Value);
+
+            String[] arguments = commandLine.getProgramArguments();
+
+            Assert.AreEqual(2, arguments.Length);
+            Assert.AreEqual("28", arguments[0]);
+            Assert.AreEqual("a", arguments[1]);
         }
     }
 }

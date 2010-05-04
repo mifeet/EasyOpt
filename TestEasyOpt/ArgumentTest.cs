@@ -98,10 +98,10 @@ namespace TestEasyOpt
         public void CreateTestLongOption()
         {
             Argument actualArgument = Argument.Create("--v");
-            Assert.AreEqual(ArgumentType.LongOption, actualArgument.Type);
-            Assert.AreEqual("v", actualArgument.Name);
+            Assert.AreEqual(ArgumentType.ProgramArgument, actualArgument.Type);
+            Assert.IsNull(actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
-            Assert.IsNull(actualArgument.ProgramArgument);
+            Assert.AreEqual("--v", actualArgument.ProgramArgument);
         }
 
         [TestMethod()]
@@ -124,5 +124,25 @@ namespace TestEasyOpt
             Assert.IsNull(actualArgument.ProgramArgument);
         }
 
+        [TestMethod()]
+        public void CreateTestShortName()
+        {
+            Assert.AreEqual(true, Argument.IsShortNameValid("a"));
+            Assert.AreEqual(false, Argument.IsShortNameValid(";"));
+
+            Assert.AreEqual(false, Argument.IsShortNameValid("long-integer"));
+            Assert.AreEqual(false, Argument.IsShortNameValid("long;"));
+
+        }
+
+        [TestMethod()]
+        public void CreateTestLongName()
+        {
+            Assert.AreEqual(true, Argument.IsLongNameValid("long-integer"));
+            Assert.AreEqual(false, Argument.IsLongNameValid("long;"));
+
+            Assert.AreEqual(false, Argument.IsLongNameValid("a"));
+            Assert.AreEqual(false, Argument.IsLongNameValid(";"));
+        }
     }
 }

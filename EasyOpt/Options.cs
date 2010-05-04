@@ -9,6 +9,7 @@ namespace EasyOpt
     {
         bool IsPresent
         {
+            get;
             set;
         }
 
@@ -20,12 +21,6 @@ namespace EasyOpt
         bool IsRequired
         {
             get;
-        }
-
-        IArgument Argument
-        {
-            get;
-            set;
         }
 
         string UsageText
@@ -70,8 +65,6 @@ namespace EasyOpt
         public String UsageText { get; set; }
 
         public bool IsPresent { get; set; }
-
-        public IArgument Argument { get; set; }
 
         internal Option(bool isRequired, String usageText)
         {
@@ -165,4 +158,77 @@ namespace EasyOpt
             : base(message, innerException)
         { }
     }
+
+    public interface IOptionContainer
+    {
+        void Add(IOption option, params String[] names);
+
+        void Add(IOption option, char shortName);
+
+        void Add(IOption option, char shortName, String longName);
+
+        IOption FindByName(string name);
+
+        bool ContainsName(string name);
+
+        List<string> ListUniqueNames();
+
+        string[] FindSynonymsByName(string name);
+    }
+
+    public class OptionContainer : IOptionContainer
+    {
+        private Dictionary<String, IOption> options;
+
+        private Dictionary<String, String[]> names;
+
+        public OptionContainer()
+        {
+            this.options = new Dictionary<string, IOption>();
+            this.names = new Dictionary<string, string[]>();
+        }
+
+        public List<string> ListUniqueNames()
+        {
+            return new List<string>(this.names.Keys);
+
+        }
+
+        public string[] FindSynonymsByName(string name)
+        {
+            return this.names[name];
+        }
+
+        public void Add(IOption option, params String[] names)
+        {
+            // checkConfiguration(option); ?
+            foreach (String name in names)
+            {
+                this.options.Add(name, option);
+            }
+
+            this.names.Add(names[0], names);
+        }
+
+        public void Add(IOption option, char shortName)
+        {
+            Add(option, new String[] { shortName.ToString() });
+        }
+
+        public void Add(IOption option, char shortName, String longName)
+        {
+            Add(option, new String[] { shortName.ToString(), longName });
+        }
+
+        public IOption FindByName(string name)
+        {
+            return this.options[name];
+        }
+
+        public bool ContainsName(string name)
+        {
+            return this.options.ContainsKey(name);
+        }
+    }
+
 }

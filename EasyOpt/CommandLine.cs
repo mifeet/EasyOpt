@@ -6,29 +6,43 @@ using System.Text;
 namespace EasyOpt
 {
     /**
+     * Base class for exceptions thrown by EasyOpt components.
+     */
+    public abstract class EasyOptException : Exception
+    {
+        public EasyOptException(string message)
+            : base(message)
+        { }
+
+        public EasyOptException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
+    }
+
+
+
+    /**
      * Class thrown when there is an error parsing an argument.
      * 
-     */ 
-    public class ParseException : Exception
+     */
+    public class ParseException : EasyOptException
     {
         /**
          * Constructor method
-         * @arg message exception's detail message
-         */ 
+         * @param message exception's detail message
+         */
         public ParseException(string message)
-        : base(message)
-        {
-            
-        }
+            : base(message)
+        { }
+
         /**
          * Constructor method
-         * @arg message exception's detail message
-         * @arg exception inner exception
+         * @param message exception's detail message
+         * @param exception inner exception
          */
         public ParseException(string message, Exception exception)
-        : base(message, exception)
-        {
-        }
+            : base(message, exception)
+        { }
     }
 
     /**

@@ -155,11 +155,14 @@ namespace EasyOpt
     * SimpleOption does not have a parameter 
     * 
     */
-    public class ForbiddenParameterException : Exception
+    public class ForbiddenParameterException : EasyOptException
     {
-        public ForbiddenParameterException()
-        {
+        public ForbiddenParameterException(string message)
+            : base(message)
+        { }
 
-        }
+        public ForbiddenParameterException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
     }
 }

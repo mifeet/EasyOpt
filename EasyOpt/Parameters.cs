@@ -130,17 +130,33 @@ namespace EasyOpt
     }
 
     /**
-     * String parameter. Perfoms no parameter's value conversion.
+     * String parameter. Perfoms no parameter value conversion.
      */
     public class StringParameter : Parameter<String>
     {
-        public StringParameter(bool isRequired, String usageName) // defaultValue is ""
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         */
+        public StringParameter(bool isRequired, String usageName)
             : this(isRequired, usageName, "")
         { }
+
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         * @param defaultValue Default value used when SetValue() hasn't been called.
+         */
         public StringParameter(bool isRequired, String usageName, String defaultValue)
             : base(isRequired, usageName, defaultValue)
         { }
 
+        /**
+         * Returns the string parameter without change.
+         * @see EasyOpt.Parameter< T >.convert()
+         */
         protected override string convert(string parameterValue)
         {
             return parameterValue;
@@ -149,13 +165,30 @@ namespace EasyOpt
 
     public class IntParameter : Parameter<int>
     {
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         */
         public IntParameter(bool isRequired, String usageName)
             : this(isRequired, usageName, 0)
         { }
+
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         * @param defaultValue Default value used when SetValue() hasn't been called.
+         */
         public IntParameter(bool isRequired, String usageName, int defaultValue)
             : base(isRequired, usageName, defaultValue)
         { }
 
+        /**
+         * Convert parameter to an integer value. 
+         * Throw an exception when conversion fails.
+         * @see EasyOpt.Parameter< T >.convert()
+         */
         protected override int convert(string parameterValue)
         {
             int result;
@@ -172,13 +205,30 @@ namespace EasyOpt
 
     public class FloatParameter : Parameter<float>
     {
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         */
         public FloatParameter(bool isRequired, String usageName)
             : this(isRequired, usageName, 0)
         { }
+
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         * @param defaultValue Default value used when SetValue() hasn't been called.
+         */
         public FloatParameter(bool isRequired, String usageName, float defaultValue)
             : base(isRequired, usageName, defaultValue)
         { }
 
+        /**
+         * Convert parameter to a float value. 
+         * Throw an exception when conversion fails.
+         * @see EasyOpt.Parameter< T >.convert()
+         */
         protected override float convert(string parameterValue)
         {
             float result;
@@ -195,18 +245,41 @@ namespace EasyOpt
 
     public class EnumParameter<T> : Parameter<T>
     {
+        /**
+         * List of accepted values - names of enum members.
+         */
         private String[] acceptedValues;
 
+        /**
+         * If true, conversion to enum value is case-insensitive, otherwise it is case-sensitive.
+         */
         private bool ignoreCase = true;
+
+        /**
+         * If true, conversion to enum value is case-insensitive, otherwise it is case-sensitive.
+         * Default value is true.
+         */
         public bool IgnoreCase
         {
             get { return ignoreCase; }
             set { ignoreCase = value; }
         }
 
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         */
         public EnumParameter(bool isRequired, String usageName)
             : this(isRequired, usageName, default(T))
         { }
+
+        /**
+         * @param isRequired Indicates whether the corresponding Option requires specification
+         *      of parameter's value when the option is present.
+         * @param usageName Name of the parameter used in usage text.
+         * @param defaultValue Default value used when SetValue() hasn't been called.
+         */
         public EnumParameter(bool isRequired, String usageName, T defaultValue)
             : base(isRequired, usageName, defaultValue)
         {
@@ -216,6 +289,10 @@ namespace EasyOpt
             acceptedValues = Enum.GetNames(type);
         }
 
+        /**
+         * Returns the string parameter without change.
+         * @see EasyOpt.Parameter< T >.convert()
+         */
         protected override T convert(string parameterValue)
         {
             StringComparer comparer = IgnoreCase ? StringComparer.InvariantCultureIgnoreCase : StringComparer.InvariantCulture;

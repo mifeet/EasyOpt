@@ -6,9 +6,11 @@ using System.Text;
 namespace EasyOpt
 {
     /**
-     * Class that implements the pattern factory method. Used to retrieve instances of the class Option.
+     * Factory class for Option<T> objects. 
+     * Use this class for creating Option<T> objects. A proper instance is returned
+     * based on the type of option's parameter.
+     * Options without a parameter are represented as Option<bool>.
      */
-
     public class OptionFactory
     {
         /**
@@ -20,7 +22,7 @@ namespace EasyOpt
         }
 
         /**
-         * Creates an option with parameter T.
+         * Creates an option with parameter with value of type T.
          */
         public static Option<T> Create<T>(bool isRequired, String usageText, Parameter<T> parameter)
         {

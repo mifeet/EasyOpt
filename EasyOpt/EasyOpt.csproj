@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Argument.cs" />
+    <Compile Include="Token.cs" />
     <Compile Include="Constraints.cs" />
     <Compile Include="OptionFactory.cs" />
     <Compile Include="CommandLine.cs" />

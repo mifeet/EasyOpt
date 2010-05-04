@@ -1,6 +1,8 @@
 ﻿using EasyOpt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System;
+
 namespace TestEasyOpt
 {
     
@@ -87,7 +89,7 @@ namespace TestEasyOpt
         {
             IOptionContainer optionContainer = new OptionContainer();
             IOption option = OptionFactory.Create(true, "help");
-            optionContainer.Add(option, 'v');
+            optionContainer.Add(option, new String[] { "v" });
 
             List<Token> arguments = Token.Create("-v", optionContainer);
             Token actualArgument = arguments[0];
@@ -106,7 +108,7 @@ namespace TestEasyOpt
             IOptionContainer optionContainer = new OptionContainer();
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> option = OptionFactory.Create<string>(true, "help", stringParameter);
-            optionContainer.Add(option, 'v');
+            optionContainer.Add(option, new String[] { "v" });
 
             List<Token> arguments = Token.Create("-vparameter", optionContainer);
             Token actualArgument = arguments[0];
@@ -139,7 +141,7 @@ namespace TestEasyOpt
         {
             IOptionContainer optionContainer = new OptionContainer();
             IOption option = OptionFactory.Create(true, "help");
-            optionContainer.Add(option,'l', "long-option");
+            optionContainer.Add(option, new String[] { "l", "long-option" });
 
             List<Token> arguments = Token.Create("--long-option", optionContainer);
             Token actualArgument = arguments[0];
@@ -158,7 +160,7 @@ namespace TestEasyOpt
             IOptionContainer optionContainer = new OptionContainer();
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> option = OptionFactory.Create<string>(true, "help", stringParameter);
-            optionContainer.Add(option, 'o', "option");
+            optionContainer.Add(option, new String[] { "o", "option" });
 
             List<Token> arguments = Token.Create("--option=3test", optionContainer);
             Token actualArgument = arguments[0];
@@ -198,9 +200,9 @@ namespace TestEasyOpt
         {
             IOptionContainer optionContainer = new OptionContainer();
             IOption option = OptionFactory.Create(true, "help");
-            optionContainer.Add(option, 'a');
-            optionContainer.Add(option, 'b');
-            optionContainer.Add(option, 'c');
+            optionContainer.Add(option, new String[] { "a" });
+            optionContainer.Add(option, new String[] { "b" });
+            optionContainer.Add(option, new String[] { "c" });
 
             List<Token> arguments = Token.Create("-abc", optionContainer);
             Token actualArgument = arguments[0];
@@ -233,12 +235,12 @@ namespace TestEasyOpt
         {
             IOptionContainer optionContainer = new OptionContainer();
             IOption option = OptionFactory.Create(true, "help");
-            optionContainer.Add(option, 'a');
-            optionContainer.Add(option, 'b');
+            optionContainer.Add(option, new String[] { "a" });
+            optionContainer.Add(option, new String[] { "b" });
 
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> optionC = OptionFactory.Create<string>(true, "help", stringParameter);
-            optionContainer.Add(optionC, 'c');
+            optionContainer.Add(optionC, new String[] { "c"} );
 
             List<Token> arguments = Token.Create("-abcd", optionContainer);
             Token actualArgument = arguments[0];

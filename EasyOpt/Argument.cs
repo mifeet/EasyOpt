@@ -11,26 +11,37 @@ namespace EasyOpt
      */ 
     public enum ArgumentType
     {
-        division, shortOption, longOption, programArgument
+        Division, ShortOption, LongOption, ProgramArgument
     }
 
     public static class Extensions
     {
         public static bool IsOption(this ArgumentType argumentType)
         {
-            bool isAnOption = argumentType.Equals(ArgumentType.shortOption) || 
-                argumentType.Equals(ArgumentType.longOption);
+            bool isAnOption = argumentType.Equals(ArgumentType.ShortOption) || 
+                argumentType.Equals(ArgumentType.LongOption);
 
             return isAnOption; 
         }
     }
 
+    public interface IArgument
+    {
+        ArgumentType Type
+        {
+            get;
+        }
 
+        string UnparsedText
+        {
+            get;
+        }
+    }
 
     /**
      * Class that represents the data stored inside an argument received through the command line.
      */
-    class Argument
+    class Argument : IArgument
     {
         /** String that represents the division argument between options and program arguments */
         private const string divisionArgument = "--";
@@ -40,6 +51,17 @@ namespace EasyOpt
 
         /** Name to identify an option */
         private string name;
+
+        /** Stores the unparsed text of a given argument */
+        private string unparsedText;
+
+        public string UnparsedText
+        {
+            get
+            {
+                return this.unparsedText;
+            }
+        }
 
         public string Name
         {
@@ -81,12 +103,23 @@ namespace EasyOpt
                 return this.type;
             }
         }
+        //Regular expression of a short name
+        private const string shortName = "[a-zA-Z0-9]";
+
+        //Regular expression of a long name
+        private const string longName = shortName + "[a-zA-Z0-9-]+";
+
+        /** Object used to check whether a given short name is valid */
+        private static Regex shortNamePattern = new Regex("^" + shortName + "$");
+
+        /** Object used to check whether a given long name is valid */
+        private static Regex longNamePattern = new Regex("^" + longName + "$");
 
         /** Valid regular expression of a short option argument */
-        private static Regex shortPattern = new Regex("^-[a-zA-Z0-9][.]*");
+        private static Regex shortArgumentPattern = new Regex("^-" + shortName +"[.]*");
 
         /** Valid regular expression of a short option argument */
-        private static Regex longPattern = new Regex("^--[a-zA-Z0-9-]+(=[.]*)?");
+        private static Regex longArgumentPattern = new Regex("^--" + longName + "(=[.]*)?");
 
         /** Parameter start index for the short unparsed argument */
         private const int indexStartParameter = 2;
@@ -101,53 +134,76 @@ namespace EasyOpt
             this.name = null;
             this.parameter = null;
             this.programArgument = null;
+            this.unparsedText = null;
         }
 
         /**
          * Factory method to create an instance given an unparsed argument.
          */
-        public static Argument Create(string unParsedArgument)
+        public static Argument Create(string unparsedArgument)
         {
             Argument argument = new Argument();
+            argument.unparsedText = unparsedArgument;
 
-            if (unParsedArgument.Equals(divisionArgument))
-            {   argument.type = ArgumentType.division;
+            if (unparsedArgument.Equals(divisionArgument))
+            {   argument.type = ArgumentType.Division;
             }
-            else if (shortPattern.IsMatch(unParsedArgument))
+            else if (shortArgumentPattern.IsMatch(unparsedArgument))
             {
-                argument.type = ArgumentType.shortOption;
-                argument.name = unParsedArgument[1].ToString();
-                if (unParsedArgument.Length > indexStartParameter)
+                argument.type = ArgumentType.ShortOption;
+                argument.name = unparsedArgument[1].ToString();
+                if (unparsedArgument.Length > indexStartParameter)
                 {
-                    argument.parameter = unParsedArgument.Substring(indexStartParameter);
+                    argument.parameter = unparsedArgument.Substring(indexStartParameter);
                 }
             }
-            else if (longPattern.IsMatch(unParsedArgument))
+            else if (longArgumentPattern.IsMatch(unparsedArgument))
             {
-                argument.type = ArgumentType.longOption;
+                argument.type = ArgumentType.LongOption;
 
-                if (unParsedArgument.Contains(equalSymbol))
+                if (unparsedArgument.Contains(equalSymbol))
                 {
-                    int equalSymbolIndex = unParsedArgument.IndexOf(equalSymbol);
+                    int equalSymbolIndex = unparsedArgument.IndexOf(equalSymbol);
 
-                    argument.name = unParsedArgument.Substring(
+                    argument.name = unparsedArgument.Substring(
                         longPatternOffset,
                         equalSymbolIndex - longPatternOffset
                         );
-                    argument.parameter = unParsedArgument.Substring(equalSymbolIndex + 1);
+                    argument.parameter = unparsedArgument.Substring(equalSymbolIndex + 1);
                 }
                 else
                 {
-                    argument.name = unParsedArgument.Substring(longPatternOffset);
+                    argument.name = unparsedArgument.Substring(longPatternOffset);
                 }
             }
             else
             {
-                argument.type = ArgumentType.programArgument;
-                argument.programArgument = unParsedArgument;
+                argument.type = ArgumentType.ProgramArgument;
+                argument.programArgument = unparsedArgument;
             }
             
             return argument;
         }
+
+        /**
+         * Method used to validate a short name
+         * @param shortName name to be checked
+         * @return true if the name is valid
+         */
+        public static bool IsShortNameValid (String shortName)
+        {
+            return shortNamePattern.IsMatch(shortName);
+        }
+
+        /**
+         * Method used to validate a long name
+         * @param longName name to be checked
+         * @return true if the name is valid
+         */
+        public static bool IsLongNameValid(String longName)
+        {
+            return longNamePattern.IsMatch(longName);
+        }
+
     }
 }

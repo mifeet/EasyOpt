@@ -75,7 +75,7 @@ namespace TestEasyOpt
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException), "SimpleOption can not have a parameter.")]
+        [ExpectedException(typeof(ParseException), "Throw exception because a is not defined as a single option.")]
         public void TestParseSimpleWithParam()
         {
             Option<bool> format = OptionFactory.Create(true, "Format 24h");
@@ -86,6 +86,87 @@ namespace TestEasyOpt
 
             commandLine.Parse();
         }
+
+        [TestMethod]
+        public void TestParseABCD()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+            Option<bool> b = OptionFactory.Create(true, "Format 24h");
+
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+
+
+            commandLine.AddOption(a, 'a');
+            commandLine.AddOption(b, 'b');
+            commandLine.AddOption(c, 'c');
+
+            commandLine.Parse();
+
+
+            Assert.IsTrue(a.IsPresent);
+            Assert.IsTrue(b.IsPresent);
+            Assert.IsTrue(c.IsPresent);
+
+            Assert.AreEqual("d", c.Value);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParseException), "Throw exception because c is not present in the command line arguments.")]
+        public void TestParseABCDRequired()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+            Option<bool> b = OptionFactory.Create(true, "Format 24h");
+
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-ab" });
+
+
+            commandLine.AddOption(a, 'a');
+            commandLine.AddOption(b, 'b');
+            commandLine.AddOption(c, 'c');
+
+            commandLine.Parse();
+
+
+            Assert.IsTrue(a.IsPresent);
+            Assert.IsTrue(b.IsPresent);
+            Assert.IsTrue(c.IsPresent);
+
+            Assert.AreEqual("d", c.Value);
+        }
+
+        [TestMethod]
+        public void TestParseABCDOptional()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+            Option<bool> b = OptionFactory.Create(true, "Format 24h");
+
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> c = OptionFactory.Create<string>(false, "help", stringParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-ab" });
+
+
+            commandLine.AddOption(a, 'a');
+            commandLine.AddOption(b, 'b');
+            commandLine.AddOption(c, 'c');
+
+            commandLine.Parse();
+
+
+            Assert.IsTrue(a.IsPresent);
+            Assert.IsTrue(b.IsPresent);
+            Assert.IsFalse(c.IsPresent);
+
+        }
+
+
+
 
         [TestMethod]
         public void TestParseInt()

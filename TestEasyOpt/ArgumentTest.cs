@@ -1,5 +1,6 @@
 ﻿using EasyOpt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 namespace TestEasyOpt
 {
     
@@ -68,8 +69,14 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestDivision()
         {
-            Argument actualArgument = Argument.Create("--");
-            Assert.AreEqual(ArgumentType.Division, actualArgument.Type);
+            IOptionContainer optionContainer = null;
+
+            List<Token> arguments = Token.Create("--", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(1, arguments.Count);
+
+            Assert.AreEqual(TokenType.Division, actualArgument.Type);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.Name);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -78,8 +85,16 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestShortOption()
         {
-            Argument actualArgument = Argument.Create("-v");
-            Assert.AreEqual(ArgumentType.ShortOption, actualArgument.Type);
+            IOptionContainer optionContainer = new OptionContainer();
+            IOption option = OptionFactory.Create(true, "help");
+            optionContainer.Add(option, 'v');
+
+            List<Token> arguments = Token.Create("-v", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(1, arguments.Count);
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument.Type);
             Assert.AreEqual("v", actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -88,8 +103,17 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestShortOptionWithArgument()
         {
-            Argument actualArgument = Argument.Create("-vparameter");
-            Assert.AreEqual(ArgumentType.ShortOption, actualArgument.Type);
+            IOptionContainer optionContainer = new OptionContainer();
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> option = OptionFactory.Create<string>(true, "help", stringParameter);
+            optionContainer.Add(option, 'v');
+
+            List<Token> arguments = Token.Create("-vparameter", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(1, arguments.Count);
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument.Type);
             Assert.AreEqual("v", actualArgument.Name);
             Assert.AreEqual("parameter", actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -97,8 +121,14 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestLongOption()
         {
-            Argument actualArgument = Argument.Create("--v");
-            Assert.AreEqual(ArgumentType.ProgramArgument, actualArgument.Type);
+            IOptionContainer optionContainer = null;
+
+            List<Token> arguments = Token.Create("--v", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(1, arguments.Count);
+
+            Assert.AreEqual(TokenType.ProgramArgument, actualArgument.Type);
             Assert.IsNull(actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
             Assert.AreEqual("--v", actualArgument.ProgramArgument);
@@ -107,8 +137,16 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestLongOptionWithDash()
         {
-            Argument actualArgument = Argument.Create("--long-option");
-            Assert.AreEqual(ArgumentType.LongOption, actualArgument.Type);
+            IOptionContainer optionContainer = new OptionContainer();
+            IOption option = OptionFactory.Create(true, "help");
+            optionContainer.Add(option,'l', "long-option");
+
+            List<Token> arguments = Token.Create("--long-option", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(1, arguments.Count);
+
+            Assert.AreEqual(TokenType.LongOption, actualArgument.Type);
             Assert.AreEqual("long-option", actualArgument.Name);
             Assert.IsNull(actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -117,8 +155,17 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestLongOptionEqual()
         {
-            Argument actualArgument = Argument.Create("--option=3test");
-            Assert.AreEqual(ArgumentType.LongOption, actualArgument.Type);
+            IOptionContainer optionContainer = new OptionContainer();
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> option = OptionFactory.Create<string>(true, "help", stringParameter);
+            optionContainer.Add(option, 'o', "option");
+
+            List<Token> arguments = Token.Create("--option=3test", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(1, arguments.Count);
+
+            Assert.AreEqual(TokenType.LongOption, actualArgument.Type);
             Assert.AreEqual("option", actualArgument.Name);
             Assert.AreEqual("3test", actualArgument.Parameter);
             Assert.IsNull(actualArgument.ProgramArgument);
@@ -127,22 +174,96 @@ namespace TestEasyOpt
         [TestMethod()]
         public void CreateTestShortName()
         {
-            Assert.AreEqual(true, Argument.IsShortNameValid("a"));
-            Assert.AreEqual(false, Argument.IsShortNameValid(";"));
 
-            Assert.AreEqual(false, Argument.IsShortNameValid("long-integer"));
-            Assert.AreEqual(false, Argument.IsShortNameValid("long;"));
+            Assert.AreEqual(true, Token.IsShortNameValid("a"));
+            Assert.AreEqual(false, Token.IsShortNameValid(";"));
+
+            Assert.AreEqual(false, Token.IsShortNameValid("long-integer"));
+            Assert.AreEqual(false, Token.IsShortNameValid("long;"));
 
         }
 
         [TestMethod()]
         public void CreateTestLongName()
         {
-            Assert.AreEqual(true, Argument.IsLongNameValid("long-integer"));
-            Assert.AreEqual(false, Argument.IsLongNameValid("long;"));
+            Assert.AreEqual(true, Token.IsLongNameValid("long-integer"));
+            Assert.AreEqual(false, Token.IsLongNameValid("long;"));
 
-            Assert.AreEqual(false, Argument.IsLongNameValid("a"));
-            Assert.AreEqual(false, Argument.IsLongNameValid(";"));
+            Assert.AreEqual(false, Token.IsLongNameValid("a"));
+            Assert.AreEqual(false, Token.IsLongNameValid(";"));
         }
+
+        [TestMethod()]
+        public void CreateTestABC()
+        {
+            IOptionContainer optionContainer = new OptionContainer();
+            IOption option = OptionFactory.Create(true, "help");
+            optionContainer.Add(option, 'a');
+            optionContainer.Add(option, 'b');
+            optionContainer.Add(option, 'c');
+
+            List<Token> arguments = Token.Create("-abc", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(3, arguments.Count);
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument.Type);
+            Assert.AreEqual("a", actualArgument.Name);
+            Assert.IsNull(actualArgument.Parameter);
+            Assert.IsNull(actualArgument.ProgramArgument);
+
+            Token actualArgument2 = arguments[1];
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument2.Type);
+            Assert.AreEqual("b", actualArgument2.Name);
+            Assert.IsNull(actualArgument2.Parameter);
+            Assert.IsNull(actualArgument2.ProgramArgument);
+
+            Token actualArgument3 = arguments[2];
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument3.Type);
+            Assert.AreEqual("c", actualArgument3.Name);
+            Assert.IsNull(actualArgument3.Parameter);
+            Assert.IsNull(actualArgument3.ProgramArgument);
+        }
+
+
+        [TestMethod()]
+        public void CreateTestABCD()
+        {
+            IOptionContainer optionContainer = new OptionContainer();
+            IOption option = OptionFactory.Create(true, "help");
+            optionContainer.Add(option, 'a');
+            optionContainer.Add(option, 'b');
+
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> optionC = OptionFactory.Create<string>(true, "help", stringParameter);
+            optionContainer.Add(optionC, 'c');
+
+            List<Token> arguments = Token.Create("-abcd", optionContainer);
+            Token actualArgument = arguments[0];
+
+            Assert.AreEqual(3, arguments.Count);
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument.Type);
+            Assert.AreEqual("a", actualArgument.Name);
+            Assert.IsNull(actualArgument.Parameter);
+            Assert.IsNull(actualArgument.ProgramArgument);
+
+            Token actualArgument2 = arguments[1];
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument2.Type);
+            Assert.AreEqual("b", actualArgument2.Name);
+            Assert.IsNull(actualArgument2.Parameter);
+            Assert.IsNull(actualArgument2.ProgramArgument);
+
+            Token actualArgument3 = arguments[2];
+
+            Assert.AreEqual(TokenType.ShortOption, actualArgument3.Type);
+            Assert.AreEqual("c", actualArgument3.Name);
+            Assert.AreEqual("d", actualArgument3.Parameter);
+            Assert.IsNull(actualArgument3.ProgramArgument);
+        }
+
     }
 }

@@ -6,6 +6,75 @@ using System.Text;
 namespace EasyOpt
 {
     /**
+     * Exception thrown when conversion of parameter from string to its
+     * respective typed value fails.
+     */
+    public class ParameterConversionException : EasyOptException
+    {
+        /**
+         * The original value of the parameter before attempt to convert it.
+         */
+        private string parameterValue;
+
+        /**
+         * The original value of the parameter before attempt to convert it.
+         */
+        public string ParameterValue
+        {
+            get
+            {
+                return parameterValue;
+            }
+        }
+
+        /**
+         * Reference to the parameter object where the exception was thrown.
+         * Stored as an Object in order to be able to handle all generic 
+         * versions of Parameter< T >.
+         */
+        private Object parameter;
+
+        /*
+         * Reference to the parameter object where the exception was thrown.
+         */
+        public Object Parameter
+        {
+            get { return parameter; }
+        }
+
+        /**
+         * Gets a message that describes the current exception
+         */
+        public override string Message
+        {
+            get
+            {
+
+                string message = String.Format(
+                    "Failed to convert parameter value \"{0}\" in {1}",
+                    parameterValue,
+                    parameter.GetType().Name
+                );
+                return message;
+            }
+        }
+
+        public ParameterConversionException(string parameterValue, Object parameter)
+            : base()
+        {
+            this.parameterValue = parameterValue;
+            this.parameter = parameter;
+        }
+
+        public ParameterConversionException(string parameterValue, Object parameter, Exception innerException)
+            : base("", innerException)
+        {
+            this.parameterValue = parameterValue;
+            this.parameter = parameter;
+        }
+    }
+
+    /**
      * Class representing an option parameter.
      * 
      * This class is used to specify an option's parameter, conversion method,
@@ -24,14 +93,15 @@ namespace EasyOpt
         /**
          * Convert parameter's value from the command line string representation
          * to type T. 
-         * Throw an exception if conversion fails.
+         * Throw ParameterConversionException if conversion fails.
          * @param parameterValue parameter's value as a string
          * @return parameter value converted to T
          */
         abstract protected T convert(String parameterValue);
 
         /**
-         * List of constraints that must hold for the converted parameter's value
+         * List of constraints that must hold for the converted parameter's value.
+         * Invariant: All constraints are not null
          */
         private List<IConstraint<T>> constraints;
 
@@ -65,8 +135,8 @@ namespace EasyOpt
 
         /**
          * Value of the parameter.
-         * If SetValue() has been called, contains the converted value,
-         * otherwise contains the default value.
+         * If SetValue() has been called, returns the converted value,
+         * otherwise returns the default value.
          * @see EasyOpt.Parameter< T >.DefaultValue
          * @see EasyOpt.Parameter< T >.SetValue()
          */
@@ -81,18 +151,24 @@ namespace EasyOpt
         /**
          * Set the parameter's value from the command line.
          * This method is intended to be called by Parser only.
+         * @param stringValue Parameter value as string. Must not be null.
+         * @throw ArgumentNullException
          */
         internal void SetValue(String stringValue)
         {
+            if (stringValue == null)
+            {
+                throw new ArgumentNullException("stringValue");
+            }
             this.value = this.convert(stringValue);
             this.isValueValid = true;
         }
 
         /**
-         * @param isRequired Indicates whether the corresponding Option requires specification
-         *      of parameter's value when the option is present.
-         * @param usageName Name of the parameter used in usage text.
-         * @param defaultValue Default value used when SetValue() hasn't been called.
+         * @param isRequired Indicates whether the corresponding Option requires the parameter
+         *      when the option itself is present.
+         * @param usageName Name of the parameter used in the usage text.
+         * @param defaultValue Default value used when the parameter's value hasn't been set explicitly
          */
         protected Parameter(bool isRequired, String usageName, T defaultValue)
         {
@@ -104,9 +180,16 @@ namespace EasyOpt
 
         /**
          * Add a constraint that must hold for the parameter's value.
+         * The constraint is applied to converted paremeter value (to type T)
+         * @param constraint Must not be null.
+         * @throw ArgumentNullException
          */
         public void AddConstraint(IConstraint<T> constraint)
         {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
             constraints.Add(constraint);
         }
 
@@ -124,8 +207,8 @@ namespace EasyOpt
                     return false;
                 }
             }
-
-            return true; // All constraints hold
+            // All constraints hold
+            return true;
         }
     }
 
@@ -147,7 +230,7 @@ namespace EasyOpt
          * @param isRequired Indicates whether the corresponding Option requires specification
          *      of parameter's value when the option is present.
          * @param usageName Name of the parameter used in usage text.
-         * @param defaultValue Default value used when SetValue() hasn't been called.
+         * @param defaultValue Default value used if no value is specified on the command line.
          */
         public StringParameter(bool isRequired, String usageName, String defaultValue)
             : base(isRequired, usageName, defaultValue)
@@ -163,6 +246,9 @@ namespace EasyOpt
         }
     }
 
+    /**
+     * Integer parameter. Converts parameter value to int.
+     */
     public class IntParameter : Parameter<int>
     {
         /**
@@ -178,7 +264,7 @@ namespace EasyOpt
          * @param isRequired Indicates whether the corresponding Option requires specification
          *      of parameter's value when the option is present.
          * @param usageName Name of the parameter used in usage text.
-         * @param defaultValue Default value used when SetValue() hasn't been called.
+         * @param defaultValue Default value used if no value is specified on the command line.
          */
         public IntParameter(bool isRequired, String usageName, int defaultValue)
             : base(isRequired, usageName, defaultValue)
@@ -186,7 +272,7 @@ namespace EasyOpt
 
         /**
          * Convert parameter to an integer value. 
-         * Throw an exception when conversion fails.
+         * @throw ParameterConversionException thrown when conversion fails.
          * @see EasyOpt.Parameter< T >.convert()
          */
         protected override int convert(string parameterValue)
@@ -198,11 +284,14 @@ namespace EasyOpt
             }
             else
             {
-                throw new Exception(); // TODO: replace by a parser-specific exception
+                throw new ParameterConversionException(parameterValue, this);
             }
         }
     }
 
+    /**
+     * Flaot parameter. Converts parameter value to float.
+     */
     public class FloatParameter : Parameter<float>
     {
         /**
@@ -218,7 +307,7 @@ namespace EasyOpt
          * @param isRequired Indicates whether the corresponding Option requires specification
          *      of parameter's value when the option is present.
          * @param usageName Name of the parameter used in usage text.
-         * @param defaultValue Default value used when SetValue() hasn't been called.
+         * @param defaultValue Default value used if no value is specified on the command line.
          */
         public FloatParameter(bool isRequired, String usageName, float defaultValue)
             : base(isRequired, usageName, defaultValue)
@@ -226,7 +315,7 @@ namespace EasyOpt
 
         /**
          * Convert parameter to a float value. 
-         * Throw an exception when conversion fails.
+         * @throw ParameterConversionException thrown when conversion fails.
          * @see EasyOpt.Parameter< T >.convert()
          */
         protected override float convert(string parameterValue)
@@ -238,11 +327,59 @@ namespace EasyOpt
             }
             else
             {
-                throw new Exception(); // TODO: replace by a parser-specific exception
+                throw new ParameterConversionException(parameterValue, this);
             }
         }
     }
 
+    /**
+     * Exception thrown when type parameter T in EnumParameter< T >
+     * is not an enum.
+     */
+    public class EnumParameterException : EasyOptException
+    {
+        /**
+         * Type given instead of an enum type
+         */
+        Type type;
+
+        /**
+         * Type given instead of an enum type
+         */
+        public Type Type
+        {
+            get { return type; }
+        }
+
+        /**
+         * Gets a message that describes the current exception
+         */
+        public override string Message
+        {
+            get
+            {
+                string message = String.Format(
+                    "An enum type expected as type parameter for EnumParameter, {0} given",
+                    type.Name
+                );
+                return message;
+            }
+        }
+
+        /**
+         * @param type Type given instead of an enum type
+         */
+        public EnumParameterException(Type type)
+        {
+            this.type = type;
+        }
+    }
+
+    /**
+     * Enum type parameter.
+     * Converts parameter to a value of an arbitrary enum type T.
+     * @param T enum type to which the parameter is converted
+     */
     public class EnumParameter<T> : Parameter<T>
     {
         /**
@@ -269,6 +406,7 @@ namespace EasyOpt
          * @param isRequired Indicates whether the corresponding Option requires specification
          *      of parameter's value when the option is present.
          * @param usageName Name of the parameter used in usage text.
+         * @throw EnumParameterException thrown when T is not an enum type
          */
         public EnumParameter(bool isRequired, String usageName)
             : this(isRequired, usageName, default(T))
@@ -278,35 +416,50 @@ namespace EasyOpt
          * @param isRequired Indicates whether the corresponding Option requires specification
          *      of parameter's value when the option is present.
          * @param usageName Name of the parameter used in usage text.
-         * @param defaultValue Default value used when SetValue() hasn't been called.
+         * @param defaultValue Default value used if no value is specified on the command line.
+         * @throw EnumParameterException thrown when T is not an enum type
          */
         public EnumParameter(bool isRequired, String usageName, T defaultValue)
             : base(isRequired, usageName, defaultValue)
         {
             Type type = typeof(T);
             if (!type.IsEnum)
-                throw new Exception(); // TODO
+            {
+                throw new EnumParameterException(type);
+            }
             acceptedValues = Enum.GetNames(type);
         }
 
         /**
-         * Returns the string parameter without change.
+         * Convert parameter to enum type T.
+         * Takes parameter as the name of an enumerated constant and converts it
+         * to an equivalent enumerated object. 
+         * Only string names are accepted, conversion of numeric values or 
+         * more enumerated constants fails.
+         * @throw ParameterConversionException thrown when conversion fails.
          * @see EasyOpt.Parameter< T >.convert()
          */
         protected override T convert(string parameterValue)
         {
+            /*
+             * Compare to the list of enum members as strings
+             * -> This prevents conversion of corresponding numeric values
+             *  or more enum constants by Enum.Parse() to an enum type and 
+             *  only correct string names are converted successfully
+             */
             StringComparer comparer = IgnoreCase ? StringComparer.InvariantCultureIgnoreCase : StringComparer.InvariantCulture;
             if (!acceptedValues.Contains(parameterValue, comparer))
             {
-                throw new Exception(""); // TODO
+                throw new ParameterConversionException(parameterValue, this);
             }
+
             try
             {
                 return (T)Enum.Parse(typeof(T), parameterValue, ignoreCase);
             }
             catch (ArgumentException e)
             {
-                throw new Exception("", e); // TODO
+                throw new ParameterConversionException(parameterValue, this, e);
             }
         }
     }

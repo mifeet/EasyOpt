@@ -12,17 +12,21 @@ namespace EasyOpt
      * Options without a parameter are represented as Option<bool>.
      * 
      * Example of usage:
-     * var outputParam = new StringParameter(true, "FILE");
-     * var output = OptionFactory.Create(false, "Output to FILE.", outputParam);
-     *  // type of output.Value is String
+     * <pre>
+     *   var outputParam = new StringParameter(true, "FILE");
+     *   var output = OptionFactory.Create(false, "Output to FILE.", outputParam);
+     *    // type of output.Value is String
      * 
-     * var help = OptionFactory.Create(false, "Print a usage message.");
-     *  // type of help.Value is bool
+     *   var help = OptionFactory.Create(false, "Print a usage message.");
+     *    // type of help.Value is bool
+     *  </pre>
      */
     public class OptionFactory
     {
         /**
          * Creates an option with no parameters.
+         * @param isRequired indicates whether the option is required to appear on the commnad line
+         * @param usageText description of option usage.
          */
         public static Option<bool> Create(bool isRequired, String usageText)
         {
@@ -31,6 +35,10 @@ namespace EasyOpt
 
         /**
          * Creates an option with parameter with value of type T.
+         * @param isRequired indicates whether the option is required to appear on the commnad line
+         * @param usageText description of option usage.
+         * @param parameter object represention the option's parameter; must not be null
+         * @throw ArgumentNullException thrown when parameter is null
          */
         public static Option<T> Create<T>(bool isRequired, String usageText, Parameter<T> parameter)
         {

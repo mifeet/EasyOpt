@@ -384,9 +384,25 @@ namespace EasyOpt
          */
         public void Add(IOption option, String[] names)
         {
+            if (names == null || names.Length == 0)
+            {
+                throw new InvalidNameException("An Option must have at least one name.");
+            }
+
             // TODO checkConfiguration(option);
             foreach (String name in names)
             {
+                Token.CheckName(name);
+
+                if (this.ContainsName(name))
+                {
+                    throw new DuplicateOptionNameException (
+                        "Option name: " + 
+                        name + 
+                        " is already assigned," +
+                        " please choose another name.");
+                }
+
                 this.options.Add(name, option);
             }
 

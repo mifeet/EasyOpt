@@ -157,6 +157,9 @@ namespace EasyOpt
         /** Valid regular expression of a short option  */
         private static Regex longOptionPattern = new Regex("^--" + longName + "(=[.]*)?");
 
+        /** Regular expression for an ilegal option */
+        private static Regex ilegalOptionPattern = new Regex("(^--[a-zA-Z0-9]$)|(^--(-)+)");
+
         /** Parameter start index for the short unparsed argument */
         private const int indexStartParameter = 2;
 
@@ -192,6 +195,10 @@ namespace EasyOpt
 
                 tokens.Add(divisionToken);
             }
+            else if (ilegalOptionPattern.IsMatch(unparsedArgument))
+            {
+                throw new ParseException("Ilegal option: " + unparsedArgument);
+            }
             else if (shortOptionPattern.IsMatch(unparsedArgument))
             {
 
@@ -216,7 +223,7 @@ namespace EasyOpt
                         {
                             shortOptionToken.parameter = unparsedArgument.Substring(i + 1);
                         }
-                        break;                        
+                        break;
                     }
                 }
             }
@@ -273,24 +280,23 @@ namespace EasyOpt
         }
 
         /**
-         * Method used to validate a short name
+         * Method used to validate a name
          * @param shortName name to be checked
-         * @return true if the name is valid
+         * @throw InvalidNameException when the name is not valid.
          */
-        public static bool IsShortNameValid (String shortName)
+        public static void CheckName (String name)
         {
-            return shortNamePattern.IsMatch(shortName);
+            if (name == null)
+            {
+                throw new InvalidNameException("An Option name can not be null.");
+            }
+            
+            if (
+                !longNamePattern.IsMatch(name) && 
+                !shortNamePattern.IsMatch(name)
+            ){
+                throw new InvalidNameException("Option name: " + name + " is invalid");
+            }
         }
-
-        /**
-         * Method used to validate a long name
-         * @param longName name to be checked
-         * @return true if the name is valid
-         */
-        public static bool IsLongNameValid(String longName)
-        {
-            return longNamePattern.IsMatch(longName);
-        }
-
     }
 }

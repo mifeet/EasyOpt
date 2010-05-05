@@ -68,6 +68,7 @@ namespace EasyOpt
                 formatNames(names, option);
                 formatOptionUsage(option);
                 usageText.AppendLine();
+                usageText.AppendLine();
             }
         }
 
@@ -166,9 +167,42 @@ namespace EasyOpt
          */
         private void formatOptionUsage(IOption option)
         {
-            usageText.Append(indent);
-            usageText.Append(indent);
-            usageText.AppendLine(option.UsageText); // TODO format in block to maxWidth
+            string doubleIndent = indent + indent;
+
+            String[] words = option.UsageText.Split(' ');
+
+            usageText.Append(doubleIndent);
+            int linePosition = doubleIndent.Length;
+            bool isFirstWord = true;
+
+            foreach(String word in words) {
+                if (isFirstWord)
+                {
+                    // first word doesn't wrap nor add a space before itself
+                    usageText.Append(word);
+                    linePosition += word.Length;
+                    isFirstWord = false;
+                    continue;
+                }
+
+                // new line position will be incremented by word length and one space
+                int newLinePosition = linePosition + word.Length + 1;
+                if (newLinePosition > (maxWidth - 1))
+                {
+                    // Word doesn't fit on the line
+                    // Wrap at maxWidth - 1 so that newlines doesn't conflict
+                    // with terminal's own line wrapping
+                    usageText.AppendLine();
+                    usageText.Append(doubleIndent);
+                    newLinePosition = doubleIndent.Length + word.Length + 1;
+                }
+                else
+                {
+                    usageText.Append(' ');
+                }
+                usageText.Append(word);
+                linePosition = newLinePosition;
+            }
         }
     }
 }

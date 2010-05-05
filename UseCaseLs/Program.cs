@@ -91,6 +91,7 @@ namespace UseCaseLs
 
         static void Main(string[] args)
         {
+            //args = new String[] { "-q" };
             CommandLine parser = new CommandLine(args);
 
             var all = OptionFactory.Create(false, "do not ignore entries starting with .");
@@ -116,7 +117,7 @@ namespace UseCaseLs
                 "WHEN may be 'never', 'always' or 'auto'",
                 colorParam
             );
-            parser.AddOption(color);
+            parser.AddOption(color, "color");
 
             var formatParam = new StringParameter(true, "WORD");
             var format = OptionFactory.Create(
@@ -141,7 +142,7 @@ namespace UseCaseLs
             var tabsize = OptionFactory.Create(false, "assume tab stops at each COLS instead of 8", tabsizeParam);
             parser.AddOption(tabsize, 'T', "tabsize");
 
-            parser.UsageDescription = " ls [OPTION]... [FILE]...\n\n";
+            parser.UsageDescription = " ls [OPTION]... [FILE]...";
 
             try
             {

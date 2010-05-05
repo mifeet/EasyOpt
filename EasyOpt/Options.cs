@@ -411,6 +411,7 @@ namespace EasyOpt
 
         /**
          * Returns list of synonyms for the option's first synonymous name.
+         * This methods expects name to be contained in the container.
          */
         public string[] FindSynonymsByName(string name)
         {
@@ -419,6 +420,8 @@ namespace EasyOpt
 
         /**
          * Return option by its option name
+         * This methods expects option identified by name to be contained in the container.
+         * Use ContainsName() to check for presence of name in the container.
          * @param name option name
          */
         public IOption FindByName(string name)

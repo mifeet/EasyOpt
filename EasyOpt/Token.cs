@@ -61,7 +61,7 @@ namespace EasyOpt
         /** String that represents the division argument between options and program arguments */
         private const string divisionTokenString = "--";
 
-        /** String that represents the equal symbol */
+        /** String that separates long option and its parameter */
         private const string equalSymbol = "=";
 
         /** Name to identify an option */

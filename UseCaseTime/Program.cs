@@ -50,7 +50,7 @@ namespace UseCaseTime
             var version = OptionFactory.Create(false, "Print version information on standard output, then exit successfully.");
             parser.AddOption(version, 'V', "version");
 
-            parser.UsageDescription = " time [options] command [arguments...]\n\n";
+            parser.UsageDescription = " time [options] command [arguments...]";
 
             try
             {

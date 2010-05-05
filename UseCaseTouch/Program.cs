@@ -56,7 +56,7 @@ namespace UseCaseTouch
             var version = OptionFactory.Create(false, "output version information and exit");
             parser.AddOption(version, "version");
 
-            parser.UsageDescription = " touch [OPTION]... [FILE]...\n\n";
+            parser.UsageDescription = " touch [OPTION]... [FILE]...";
 
             try
             {

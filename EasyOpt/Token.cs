@@ -32,31 +32,11 @@ namespace EasyOpt
     }
 
     /**
-     * Interface for a 
+     * Class is an abstraction of the tokens used to parse the command line
+     * arguments. It is responsible for creating those tokens and handles
+     * low level parsing of the data using regular expressions.
      */
-    internal interface IToken
-    {
-        IOption Option
-        {
-            get;
-            set;
-        }
-
-        TokenType Type
-        {
-            get;
-        }
-
-        string UnparsedText
-        {
-            get;
-        }
-    }
-
-    /**
-     * Class that represents the data stored inside a token received through an argument of the command line.
-     */
-    internal class Token : IToken
+    internal class Token
     {
         /** String that represents the division argument between options and program arguments */
         private const string divisionTokenString = "--";
@@ -140,7 +120,7 @@ namespace EasyOpt
             }
         }
         /** Regular expression of a short name */
-        private const string shortName = "[a-zA-Z0-9]+";
+        private const string shortName = "[a-zA-Z0-9?][a-zA-Z0-9]*";
 
         /** Regular expression of a long name */
         private const string longName = "[a-zA-Z0-9][a-zA-Z0-9-]+";

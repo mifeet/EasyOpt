@@ -405,6 +405,86 @@ namespace TestEasyOpt
             Assert.AreEqual(2, arguments.Length);
             Assert.AreEqual("28", arguments[0]);
             Assert.AreEqual("a", arguments[1]);
+
+            Console.Out.Write(commandLine.GetUsage());
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DuplicateOptionNameException), "Option names should be unique.")]
+        public void TestAddDuplicateName()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+            Option<bool> b = OptionFactory.Create(true, "Format 24h");
+
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+
+
+            commandLine.AddOption(a, 'a');
+            commandLine.AddOption(b, 'b');
+            commandLine.AddOption(c, 'a');
+
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DuplicateOptionNameException), "Option names should be unique.")]
+        public void TestAddDuplicateNameSameOption()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+
+
+            commandLine.AddOption(a, 'a', "a");
+
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException), "Option names can not be null.")]
+        public void TestAddNullNames()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+
+            string[] names = null;
+
+            commandLine.AddOption(a, names);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException), "Option names can not be null.")]
+        public void TestAddNullNames2()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+
+            string[] names = new String[0];
+
+            commandLine.AddOption(a, names);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException), "Option names can not be null.")]
+        public void TestAddNullNames3()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+
+            string[] names = new String[1];
+
+            commandLine.AddOption(a, names);
         }
     }
 }

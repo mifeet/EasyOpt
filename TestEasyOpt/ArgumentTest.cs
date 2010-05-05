@@ -121,19 +121,21 @@ namespace TestEasyOpt
             Assert.IsNull(actualArgument.ProgramArgument);
         }
         [TestMethod()]
-        public void CreateTestLongOption()
+        [ExpectedException(typeof(ParseException), "Ilegal option.")]
+        public void CreateTestIlegalOption()
         {
             IOptionContainer optionContainer = null;
 
             List<Token> arguments = Token.Create("--v", optionContainer);
-            Token actualArgument = arguments[0];
+        }
 
-            Assert.AreEqual(1, arguments.Count);
+        [TestMethod()]
+        [ExpectedException(typeof(ParseException), "Ilegal option.")]
+        public void CreateTestIlegalOptionDash()
+        {
+            IOptionContainer optionContainer = null;
 
-            Assert.AreEqual(TokenType.ProgramArgument, actualArgument.Type);
-            Assert.IsNull(actualArgument.Name);
-            Assert.IsNull(actualArgument.Parameter);
-            Assert.AreEqual("--v", actualArgument.ProgramArgument);
+            List<Token> arguments = Token.Create("---vdd", optionContainer);
         }
 
         [TestMethod()]
@@ -174,25 +176,42 @@ namespace TestEasyOpt
         }
 
         [TestMethod()]
-        public void CreateTestShortName()
+        public void CreateTestCheckName()
         {
 
-            Assert.AreEqual(true, Token.IsShortNameValid("a"));
-            Assert.AreEqual(false, Token.IsShortNameValid(";"));
+            try {
 
-            Assert.AreEqual(false, Token.IsShortNameValid("long-integer"));
-            Assert.AreEqual(false, Token.IsShortNameValid("long;"));
+            Token.CheckName("a");
+            Token.CheckName("long-integer");
+            Assert.IsTrue(true);
+            }
+            catch(InvalidNameException)
+            {
+                Assert.IsTrue(false);
+            }
 
-        }
+            try
+            {
+                Token.CheckName(";");
+                Assert.IsTrue(false);
+            }
+            catch (InvalidNameException)
+            {
+                Assert.IsTrue(true);
+            }
 
-        [TestMethod()]
-        public void CreateTestLongName()
-        {
-            Assert.AreEqual(true, Token.IsLongNameValid("long-integer"));
-            Assert.AreEqual(false, Token.IsLongNameValid("long;"));
+            try
+            {
+                Token.CheckName("long;");
+                Assert.IsTrue(false);
+            }
+            catch (InvalidNameException)
+            {
+                Assert.IsTrue(true);
+            }
+            
+            
 
-            Assert.AreEqual(false, Token.IsLongNameValid("a"));
-            Assert.AreEqual(false, Token.IsLongNameValid(";"));
         }
 
         [TestMethod()]

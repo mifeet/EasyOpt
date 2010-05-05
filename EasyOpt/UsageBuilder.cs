@@ -79,9 +79,9 @@ namespace EasyOpt
          */
         private String formatNames(String[] names, IOption option)
         {
+            usageText.Append(indent);
             for (int i = 0; i < names.Length; i++)
             {
-                usageText.Append(indent);
                 String name = names[i];
                 bool isShortOption = name.Length == 1;
                 

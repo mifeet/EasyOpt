@@ -47,6 +47,34 @@ namespace EasyOpt
     }
 
     /**
+     * Class thrown when the name given to an option is invalid.
+     */ 
+    public class InvalidNameException : EasyOptException
+    {
+        /* Constructor method
+         * @param message exception's detail message
+         */
+        public InvalidNameException(string message)
+            : base(message)
+        { }
+    }
+
+    /**
+     * Exception thrown when the user attempt to add a name that is already registered.
+     */
+    class DuplicateOptionNameException : EasyOptException
+    {
+        /**
+         * Constructor method
+         * @param detail message with details of the exception.
+         */
+        public DuplicateOptionNameException(string message)
+            : base(message)
+        { }
+
+    }
+
+    /**
      * Parse process is done in three phases.
      * 
      * 1. option: parses an argument as an option.
@@ -92,6 +120,20 @@ namespace EasyOpt
          */
         private List<string> programArguments = new List<string>();
 
+        //Stores the application name, is used in the usage help text
+        private string applicationName = "";
+
+        /**
+         * Specify a name for the application, will be used for the usage help text.
+         */
+        public string ApplicationName
+        {
+            set
+            {
+                this.applicationName = value;
+            }
+        }
+
         /**
          * Returns non-option arguments
          */ 
@@ -116,17 +158,6 @@ namespace EasyOpt
          * Description of program usage.
          */
         public String UsageDescription { get; set; }
-
-        /**
-         * Returns usage message.
-         * Usage message consists of UsageDescription and description
-         * of all options passed by AddOption< T >() and their synonyms.
-         */
-        public String GetUsage()
-        {
-            //throw new NotImplementedException();
-            return "";
-        }
 
         /**
          * Add option using names as its synonymous option names.
@@ -359,6 +390,132 @@ namespace EasyOpt
             {
                 throw new ParseException("Option: " + argument.Name + " requires a parameter.");
 
+            }
+        }
+
+        public String UsageText { get; set; }
+
+        /**
+         * Returns usage message.
+         * Usage message consists of UsageDescription and description
+         * of all options passed by AddOption< T >() and their synonyms.
+         */
+        public String GetUsage()
+        {
+            StringBuilder usage = new StringBuilder();
+
+            usage.Append(this.applicationName);
+            usage.AppendLine(" [options] command [arguments...]");
+
+            IEnumerable<string> uniqueNames = this.optionContainer.ListUniqueNames();
+
+            foreach (String uniqueName in uniqueNames)
+            {
+                IOption option = this.optionContainer.FindByName(uniqueName);
+                String[] names = this.optionContainer.FindSynonymsByName(uniqueName);
+
+                appendSynonymNames(usage, names, option);
+
+                usage.Append("\t\t");
+                usage.AppendLine(option.UsageText);
+
+            }
+
+            usage.AppendLine("\n\t--\tTerminate option list.");
+            
+            return usage.ToString();
+        }
+
+        /**
+         * Appends all the synonyms names to usage in a format easy to understand for a final user.
+         * @param names Array with synonyms of the same option
+         * @param option instance which stores usage text information.
+         */ 
+        private void appendSynonymNames(StringBuilder usage, string[] names, IOption option)
+        {
+            for (int i = 0; i < names.Length; i++)
+            {
+                usage.Append("\t");
+
+                if (!option.IsRequired)
+                {
+                    usage.Append("[ ");
+                }
+
+                String name = names[i];
+                bool isShortOption = name.Length == 1;
+
+                if (isShortOption)
+                {
+                    appendShortOption(usage, name, option);
+                }
+                else
+                {
+                    appendLongOption(usage, name, option);
+                }
+
+                if (!option.IsRequired)
+                {
+                    usage.Append(" ]");
+                }
+
+                bool hasNextName = i + 1 < names.Length;
+
+                if (hasNextName)
+                {
+                    usage.Append(", ");
+                }
+                else
+                {
+                    usage.AppendLine("");
+                }
+            }
+        }
+
+        /**
+         * Appends a short option to the usage text.
+         * @param name short option name
+         * @param option instance which stores usage text information.
+         */ 
+        private void appendShortOption(StringBuilder usage, string name, IOption option)
+        {
+            usage.Append("-");
+            usage.Append(name);
+
+            if (!option.IsParameterRequired)
+            {
+                usage.Append("[");
+            }
+
+            usage.Append(option.ParameterUsageName);
+
+            if (!option.IsParameterRequired)
+            {
+                usage.Append("]");
+            }
+        }
+
+        /**
+         * Appends a short option to the usage text.
+         * @param name short option name
+         * @param option instance which stores usage text information.
+         */ 
+        private void appendLongOption(StringBuilder usage, string name, IOption option)
+        {
+            usage.Append("--");
+            usage.Append(name);
+
+            if (!option.IsParameterRequired)
+            {
+                usage.Append("[");
+            }
+
+            usage.Append("=");
+            usage.Append(option.ParameterUsageName);
+
+            if (!option.IsParameterRequired)
+            {
+                usage.Append("]");
             }
         }
 

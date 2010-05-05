@@ -24,7 +24,8 @@ namespace EasyOpt
     }
 
     /**
-     * Class thrown when there is an error parsing an argument.
+     * Class thrown when there is an error parsing a command line argument 
+     * that does not allow the parse process to continue.
      */
     public class ParseException : EasyOptException
     {
@@ -48,6 +49,7 @@ namespace EasyOpt
 
     /**
      * Class thrown when the name given to an option is invalid.
+     * @See Token class for more details about valid names.
      */ 
     public class InvalidNameException : EasyOptException
     {
@@ -60,7 +62,8 @@ namespace EasyOpt
     }
 
     /**
-     * Exception thrown when the user attempts to add a name that is already registered.
+     * Exception thrown when the user attempts to add an option with a name 
+     * that is already registered.
      */
     class DuplicateOptionNameException : EasyOptException
     {
@@ -78,8 +81,8 @@ namespace EasyOpt
      * Parse process is done in three phases.
      * 
      * 1. option: parses an argument as an option.
-     *    Can go to phase 2 is the parameter is missing
-     *    Can go to phase 3 is division argument is parsed.
+     *    Can go to phase 2 if the parameter is missing and it is a long option
+     *    Can go to phase 3 if the division token (--) is found.
      * 2. waitingForArgument: defines the next unparsed argument as an option parameter.
      *    Go directly to phase 1.
      * 3. programArgument: defines a program argument as an unparsed argument.
@@ -89,14 +92,22 @@ namespace EasyOpt
     {
         Option, WaitingForArgument, ProgramArgument
     }
- 
+
     /**
-     * Class used as an abstraction of the command line. 
-     * Operations in this class should be done in three steps.
+     * This class is abstraction of the command line. Create an instance of 
+     * this class to start working with EasyOpt. It is responsible 
+     * for all the procedures directly related to the user of this library.
+     * It provides methods to add options, parse the command line
+     * argument based and generate a text usage.
      * 
-     * 1. Configuration: methods addOption()
-     * 2. Parse: method parse()
-     * 3. Query: method XXX
+     * 
+     * Use this class in three steps.
+     * 
+     * 1. Create a new instance with the command line arguments as a parameter
+     * 2. Configuration step: cal addOption(). One call per each Option.
+     * 3. Parse: call parse() to begin the parse process.
+     * 
+     * The parse method fill your options with all the needed information.
      */
     public class CommandLine
     {
@@ -111,7 +122,7 @@ namespace EasyOpt
         private String[] unparsedArguments;
 
         /**
-         * Stores the parse phase
+         * Stores the parser's current phase
          */
         private ParsePhase phase;
 
@@ -129,7 +140,10 @@ namespace EasyOpt
         }
 
         /**
-         * Initializes a CommandLine instance.
+         * Initializes a CommandLine instance. This instance should be called
+         * to create a CommandLine instance.
+         * 
+         * @See OptionFactory
          * 
          * @param unparsedArguments Array of arguments from the command line.
          */
@@ -183,7 +197,16 @@ namespace EasyOpt
         }
 
         /**
-         * @throw ParseException
+         * This method parses the command line arguments based on the configuration.
+         * It must be called after all Options are added.
+         * 
+         * Each Option instance is filled with the information needed during
+         * the parse process.
+         * 
+         * @see Option<T> to know how to retrieve the command line options
+         * after the parse process.
+         * 
+         * @throw ParseException if it is not possible to parse an argument
          */
         public void Parse()
         {
@@ -212,6 +235,8 @@ namespace EasyOpt
 
         /**
          * Check that all required options are given within the command line arguments.
+         * 
+         * @throw ParseException if there is a missing option in the arguments.
          */ 
         private void checkRequiredOptions()
         {
@@ -230,7 +255,7 @@ namespace EasyOpt
 
         /**
          * Attempts to parse the given unparsedArgument as a parameter for the last parsedOption.
-         * In case is optional creates a new Option.
+         * In the case that is optional, it creates a new Option.
          * @throw ParseException if it is not possible to parse the argument and the parameter is required.
          */ 
         private Token parseWaitingForArgument(Token lastParsedToken, string unparsedArgument)
@@ -273,7 +298,7 @@ namespace EasyOpt
 
 
         /**
-         * Verify the final state of the parser.
+         * Verify that the final phase of the parser is a valid ending phase.
          * @throw ParseException when the parser phase has a non valid ending state.
          */ 
         private void checkParserFinalState(Token lastParsedToken)
@@ -286,9 +311,9 @@ namespace EasyOpt
         }
 
         /**
-         * Procedure that parses a command line argument.
+         * Procedure that parses a command line argument into Tokens.
          * 
-         * @return Option associated with the argument.
+         * @return Token last processed token.
          */ 
         private Token parseOption(string unparsedArgument)
         {

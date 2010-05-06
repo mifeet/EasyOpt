@@ -338,6 +338,27 @@ namespace TestEasyOpt
 
             String[] arguments = commandLine.GetArguments();
 
+            Assert.AreEqual(3, arguments.Length);
+            Assert.AreEqual("334", arguments[0]);
+            Assert.AreEqual("28", arguments[1]);
+            Assert.AreEqual("a", arguments[2]);
+        }
+
+        [TestMethod]
+        public void TestParseLongOptionEqualAndProgramArguments()
+        {
+            IntParameter intParameter = new IntParameter(false, "Integer parameter");
+            Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
+            CommandLine commandLine = new CommandLine(new string[] { "--integer=334", "28", "a" });
+
+            commandLine.AddOption(intOption, 'i', "integer");
+
+            commandLine.Parse();
+
+            Assert.AreEqual(true, intOption.IsPresent);
+
+            String[] arguments = commandLine.GetArguments();
+
             Assert.AreEqual(2, arguments.Length);
             Assert.AreEqual("28", arguments[0]);
             Assert.AreEqual("a", arguments[1]);

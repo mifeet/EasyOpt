@@ -65,7 +65,7 @@ namespace EasyOpt
      * Exception thrown when the user attempts to add an option with a name 
      * that is already registered.
      */
-    class DuplicateOptionNameException : EasyOptException
+    public class DuplicateOptionNameException : EasyOptException
     {
         /**
          * Constructor method

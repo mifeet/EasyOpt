@@ -50,7 +50,7 @@ namespace EasyOpt
     /**
      * Class thrown when the name given to an option is invalid.
      * @See Token class for more details about valid names.
-     */ 
+     */
     public class InvalidNameException : EasyOptException
     {
         /* Constructor method
@@ -87,7 +87,7 @@ namespace EasyOpt
      *    Go directly to phase 1.
      * 3. programArgument: defines a program argument as an unparsed argument.
      *    Final state, can not go to any other phase.
-     */ 
+     */
     internal enum ParsePhase
     {
         Option, WaitingForArgument, ProgramArgument
@@ -133,7 +133,7 @@ namespace EasyOpt
 
         /**
          * Returns non-option arguments
-         */ 
+         */
         public String[] GetArguments()
         {
             return programArguments.ToArray();
@@ -237,7 +237,7 @@ namespace EasyOpt
          * Check that all required options are given within the command line arguments.
          * 
          * @throw ParseException if there is a missing option in the arguments.
-         */ 
+         */
         private void checkRequiredOptions()
         {
             IEnumerable<string> uniqueNames = this.optionContainer.ListUniqueNames();
@@ -257,7 +257,7 @@ namespace EasyOpt
          * Attempts to parse the given unparsedArgument as a parameter for the last parsedOption.
          * In the case that is optional, it creates a new Option.
          * @throw ParseException if it is not possible to parse the argument and the parameter is required.
-         */ 
+         */
         private Token parseWaitingForArgument(Token lastParsedToken, string unparsedArgument)
         {
             if (lastParsedToken == null)
@@ -291,7 +291,7 @@ namespace EasyOpt
             {
                 currentToken = parseOption(unparsedArgument);
             }
-            
+
 
             return currentToken;
         }
@@ -300,13 +300,12 @@ namespace EasyOpt
         /**
          * Verify that the final phase of the parser is a valid ending phase.
          * @throw ParseException when the parser phase has a non valid ending state.
-         */ 
+         */
         private void checkParserFinalState(Token lastParsedToken)
         {
             if (this.phase.Equals(ParsePhase.WaitingForArgument) && lastParsedToken.Option.IsParameterRequired)
             {
-                //TODO discuss a data structure to retrieve synonyms to options, maybe another hash table.
-                throw new ParseException ("Missing argument for option: ");
+                throw new ParseException("Missing argument for option: " + lastParsedToken.Name);
             }
         }
 
@@ -314,11 +313,11 @@ namespace EasyOpt
          * Procedure that parses a command line argument into Tokens.
          * 
          * @return Token last processed token.
-         */ 
+         */
         private Token parseOption(string unparsedArgument)
         {
             Token lastParsedToken = null;
-            
+
             List<Token> tokens = Token.Create(unparsedArgument, optionContainer);
 
             foreach (Token token in tokens)
@@ -331,7 +330,9 @@ namespace EasyOpt
                 }
                 else if (token.Type.Equals(TokenType.ProgramArgument))
                 {
-                    this.phase = ParsePhase.ProgramArgument;
+                    // uncomment the following line in order to disable non-option arguments within option arguments:
+                    //this.phase = ParsePhase.ProgramArgument;
+
                     this.programArguments.Add(token.ProgramArgument);
                 }
                 else if (token.Type.IsOption())
@@ -347,7 +348,8 @@ namespace EasyOpt
 
                     if (token.Parameter == null)
                     {
-                        if (token.Type.Equals(TokenType.LongOption)){
+                        if (token.Type.Equals(TokenType.LongOption))
+                        {
                             this.phase = ParsePhase.WaitingForArgument;
                         }
                     }
@@ -378,7 +380,7 @@ namespace EasyOpt
             {
                 throw new ParseException("Option: " + token.UnparsedText + " can't have a parameter.", e);
             }
-            catch (ParameterConversionException e)
+            catch (ParameterException e)
             {
                 throw new ParseException("Parameter of option: " + token.UnparsedText + " is invalid.", e);
             }
@@ -395,12 +397,11 @@ namespace EasyOpt
         private void parseRequiredParameter(IOption option, Token argument)
         {
             if (
-                argument.Parameter == null && 
+                argument.Parameter == null &&
                 argument.Type.Equals(TokenType.ShortOption)
             )
             {
                 throw new ParseException("Option: " + argument.Name + " requires a parameter.");
-
             }
         }
 

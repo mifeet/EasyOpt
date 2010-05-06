@@ -46,7 +46,7 @@ namespace UseCaseTouch
 
             var stampParam = new StringParameter(true, "STAMP");
             stampParam.AddConstraint(new TimeConstraint());
-            var stamp = OptionFactory.Create(false, "use [[CC]YY]MMDDhhmm[.ss] instead of current time");
+            var stamp = OptionFactory.Create(false, "use [[CC]YY]MMDDhhmm[.ss] instead of current time", stampParam);
             parser.AddOption(stamp, 't');
 
             var timeParam = new EnumParameter<Time>(true, "WORD");
@@ -79,7 +79,6 @@ namespace UseCaseTouch
             Console.WriteLine("\nArguments: {0}", String.Join(" ", (String[]) arguments));
             Console.WriteLine("\nUsage text:");
             Console.WriteLine(parser.GetUsage());
-            Console.ReadLine();
         }
     }
 }

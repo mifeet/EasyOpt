@@ -74,7 +74,6 @@ namespace UseCaseTime
             Console.WriteLine("\nArguments: {0}", String.Join(" ", (String[]) arguments));
             Console.WriteLine("\nUsage text:");
             Console.WriteLine(parser.GetUsage());
-            Console.ReadLine();
         }
     }
 }

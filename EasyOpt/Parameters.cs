@@ -6,10 +6,9 @@ using System.Text;
 namespace EasyOpt
 {
     /**
-     * Exception thrown when conversion of parameter from string to its
-     * respective typed value fails.
+     * Exception thrown option parameter is invalid.
      */
-    public class ParameterConversionException : EasyOptException
+    public class ParameterException : EasyOptException
     {
         /**
          * The original value of the parameter before attempt to convert it.
@@ -49,29 +48,56 @@ namespace EasyOpt
         {
             get
             {
-
                 string message = String.Format(
-                    "Failed to convert parameter value \"{0}\" in {1}",
-                    parameterValue,
-                    parameter.GetType().Name
+                    "Invalid parameter value \"{0}\"",
+                    parameterValue
                 );
                 return message;
             }
         }
 
-        public ParameterConversionException(string parameterValue, Object parameter)
+        public ParameterException(string parameterValue, Object parameter)
             : base()
         {
             this.parameterValue = parameterValue;
             this.parameter = parameter;
         }
 
-        public ParameterConversionException(string parameterValue, Object parameter, Exception innerException)
+        public ParameterException(string parameterValue, Object parameter, Exception innerException)
             : base("", innerException)
         {
             this.parameterValue = parameterValue;
             this.parameter = parameter;
         }
+    }
+
+    /**
+     * Exception thrown when conversion of parameter from string to its
+     * respective typed value fails.
+     */
+    public class ParameterConversionException : ParameterException
+    {
+        public ParameterConversionException(string parameterValue, Object parameter)
+            : base(parameterValue, parameter)
+        { }
+
+        public ParameterConversionException(string parameterValue, Object parameter, Exception innerException)
+            : base(parameterValue, parameter, innerException)
+        { }
+    }
+
+    /**
+     * Exception thrown when parameter constraints don't hold.
+     */
+    public class ConstraintException : ParameterException
+    {
+        public ConstraintException(string parameterValue, Object parameter)
+            : base(parameterValue, parameter)
+        { }
+
+        public ConstraintException(string parameterValue, Object parameter, Exception innerException)
+            : base(parameterValue, parameter, innerException)
+        { }
     }
 
     /**
@@ -153,7 +179,7 @@ namespace EasyOpt
          * This method is intended to be called by Parser only.
          * @param stringValue Parameter value as string. Must not be null.
          * @throw ArgumentNullException
-         * @throw ParameterConversionException
+         * @throw ParameterException
          */
         internal void SetValue(String stringValue)
         {
@@ -162,6 +188,10 @@ namespace EasyOpt
                 throw new ArgumentNullException("stringValue");
             }
             this.value = this.convert(stringValue);
+            if (!this.CheckConstraints(this.value))
+            {
+                throw new ConstraintException(stringValue, this);
+            }
             this.isValueValid = true;
         }
 
@@ -198,9 +228,8 @@ namespace EasyOpt
          * Return true if all constraints hold for the parameter's value,
          * false otherwise.
          */
-        public bool CheckConstraints()
+        protected bool CheckConstraints(T value)
         {
-            T value = this.Value;
             foreach (var constraint in constraints)
             {
                 if (!constraint.IsValid(value))

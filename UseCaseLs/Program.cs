@@ -34,6 +34,9 @@ namespace UseCaseLs
         }
     }
 
+    class SizeConversionException : Exception
+    { }
+
     class SizeParameter : Parameter<Size>
     {
         public SizeParameter(bool isRequired, String usageName)
@@ -43,28 +46,35 @@ namespace UseCaseLs
             : base(isRequired, usageName, defaultValue)
         { }
 
-        public Size x(String s) { return convert(s); }
-
         protected override Size convert(string parameterValue)
         {
-            String[] valuePair = parameterValue.Split(new char[] { ' ' });
-            if (valuePair.Length != 2)
+            char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            int firstDigitIndex = parameterValue.IndexOfAny(digits);
+            if (firstDigitIndex < 0)
             {
-                throw new Exception("");
+                throw new SizeConversionException();
+            }
+
+            String unitString = parameterValue.Substring(0, firstDigitIndex);
+            String valueString = parameterValue.Substring(firstDigitIndex);
+            if (unitString.Length == 1)
+            {
+                unitString += "B";
             }
 
             SizeUnit unit;
             try
             {
-                unit = (SizeUnit) Enum.Parse(typeof(SizeUnit), valuePair[0], true);
+                
+                unit = (SizeUnit) Enum.Parse(typeof(SizeUnit), unitString, true);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
-                throw new Exception("", e); // TODO
+                throw new SizeConversionException();
             }
 
             int value = 1;
-            String[] factors = valuePair[1].Split(new char[] { '*' });
+            String[] factors = valueString.Split(new char[] { '*' });
             foreach (String factor in factors)
             {
                 int factorValue;
@@ -74,7 +84,7 @@ namespace UseCaseLs
                 }
                 else
                 {
-                    throw new Exception(""); // TODO
+                    throw new SizeConversionException();
                 }
             }
 
@@ -103,8 +113,8 @@ namespace UseCaseLs
             var blockSizeParam = new SizeParameter(true, "SIZE", new Size(0, SizeUnit.kB));
             var blockSize = OptionFactory.Create(
                 false,
-                "use SIZE-byte blocks; SIZE  may  be one of following: kB 1000, K 1024, MB 1000*1000,"+
-                "M 1024*1024, and so on for G, T, P, E, Z, Y.",
+                "use SIZE-byte blocks; SIZE  may  be one of following: kB1000, K1024, MB1000*1000, "+
+                "M1024*1024, and so on for G, T, P, E, Z, Y.",
                 blockSizeParam
             );
             parser.AddOption(blockSize, "block-size");
@@ -165,7 +175,6 @@ namespace UseCaseLs
             Console.WriteLine("\nArguments: {0}", String.Join(" ", (String[]) arguments));
             Console.WriteLine("\nUsage text:");
             Console.WriteLine(parser.GetUsage());
-            Console.ReadLine();
         }
     }
 }

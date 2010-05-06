@@ -185,7 +185,7 @@ namespace EasyOpt
                     continue;
                 }
 
-                // new line position will be incremented by word length and one space
+                // new lineposition will be incremented by word length and one space
                 int newLinePosition = linePosition + word.Length + 1;
                 if (newLinePosition > (maxWidth - 1))
                 {

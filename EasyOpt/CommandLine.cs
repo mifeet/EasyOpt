@@ -277,14 +277,7 @@ namespace EasyOpt
                 }
                 else
                 {
-                    try
-                    {
-                        setOptionValue(lastParsedToken, unparsedArgument);
-                    }
-                    catch (ParseException)
-                    {
-                        currentToken = parseOption(unparsedArgument);
-                    }
+                    currentToken = parseOption(unparsedArgument);
                 }
             }
             else

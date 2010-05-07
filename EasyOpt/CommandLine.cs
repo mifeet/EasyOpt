@@ -327,6 +327,10 @@ namespace EasyOpt
                 else if (token.Type.IsOption())
                 {
                     IOption option = optionContainer.FindByName(token.Name);
+                    if (option.IsPresent)
+                    {
+                        throw new ParseException("Option " + token.Name + " has been listed twice");
+                    }
                     option.IsPresent = true;
                     token.Option = option;
 

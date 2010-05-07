@@ -159,6 +159,9 @@ namespace EasyOpt
          * longer names are treated as long option names (e.g. --verbose)
          * 
          * At least one name for the option must be listed.
+         * 
+         * Option name must not contain '=' character nor whitespace and it must not start with '-'
+         * 
          * @param option Object representing an option. Must not be null.
          * @param names List of synonymous names for the option. One-character long name
          *      is treated as a short option name, longer name is treated as a long option name.

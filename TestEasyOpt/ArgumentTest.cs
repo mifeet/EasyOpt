@@ -192,7 +192,7 @@ namespace TestEasyOpt
 
             try
             {
-                Token.CheckName(";");
+                Token.CheckName(" ");
                 Assert.IsTrue(false);
             }
             catch (InvalidNameException)
@@ -202,15 +202,23 @@ namespace TestEasyOpt
 
             try
             {
-                Token.CheckName("long;");
+                Token.CheckName("-");
                 Assert.IsTrue(false);
             }
             catch (InvalidNameException)
             {
                 Assert.IsTrue(true);
             }
-            
-            
+
+            try
+            {
+                Token.CheckName("=");
+                Assert.IsTrue(false);
+            }
+            catch (InvalidNameException)
+            {
+                Assert.IsTrue(true);
+            }       
 
         }
 

@@ -120,10 +120,10 @@ namespace EasyOpt
             }
         }
         /** Regular expression of a short name */
-        private const string shortName = "[a-zA-Z0-9?][a-zA-Z0-9]*";
+        private const string shortName = "[^-=\\s]+";
 
         /** Regular expression of a long name */
-        private const string longName = "[a-zA-Z0-9][a-zA-Z0-9-]+";
+        private const string longName = "[^-=\\s][^=\\s]+";
 
         /** Object used to check whether a given short name is valid */
         private static Regex shortNamePattern = new Regex("^" + shortName + "$");
@@ -138,7 +138,7 @@ namespace EasyOpt
         private static Regex longOptionPattern = new Regex("^--" + longName + "(=[.]*)?");
 
         /** Regular expression for an ilegal option */
-        private static Regex ilegalOptionPattern = new Regex("(^--[a-zA-Z0-9]$)|(^--(-)+)");
+        private static Regex ilegalOptionPattern = new Regex("(^--[^-=\\s]$)|(^--(-)+)");
 
         /** Parameter start index for the short unparsed argument */
         private const int indexStartParameter = 2;

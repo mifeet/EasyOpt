@@ -269,22 +269,16 @@ namespace EasyOpt
 
             Token currentToken = null;
 
-            if (lastParsedToken.Type.Equals(TokenType.LongOption))
-            {
-                if (lastParsedToken.Option.IsParameterRequired)
-                {
-                    setOptionValue(lastParsedToken, unparsedArgument);
-                }
-                else
-                {
-                    currentToken = parseOption(unparsedArgument);
-                }
+            if (
+                lastParsedToken.Type.IsOption() && 
+                lastParsedToken.Option.IsParameterRequired
+            ){
+                setOptionValue(lastParsedToken, unparsedArgument);
             }
             else
             {
                 currentToken = parseOption(unparsedArgument);
             }
-
 
             return currentToken;
         }
@@ -334,14 +328,9 @@ namespace EasyOpt
                     option.IsPresent = true;
                     token.Option = option;
 
-                    if (option.IsParameterRequired)
-                    {
-                        parseRequiredParameter(option, token);
-                    }
-
                     if (token.Parameter == null)
                     {
-                        if (token.Type.Equals(TokenType.LongOption))
+                        if (option.HasParameter)
                         {
                             this.phase = ParsePhase.WaitingForArgument;
                         }
@@ -376,25 +365,6 @@ namespace EasyOpt
             catch (ParameterException e)
             {
                 throw new ParseException("Parameter of option: " + token.UnparsedText + " is invalid.", e);
-            }
-        }
-
-        /**
-         * Parse procedure for a parameter that is required.
-         * 
-         * @param option the option that is being parsed
-         * @param argument the parsed argument received from the command line.
-         * 
-         * @throw ParseException if the parameter is required and it is a short option.
-         */
-        private void parseRequiredParameter(IOption option, Token argument)
-        {
-            if (
-                argument.Parameter == null &&
-                argument.Type.Equals(TokenType.ShortOption)
-            )
-            {
-                throw new ParseException("Option: " + argument.Name + " requires a parameter.");
             }
         }
 

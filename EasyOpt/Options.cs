@@ -6,6 +6,42 @@ using System.Text;
 namespace EasyOpt
 {
     /**
+     * Class thrown when the name given to an option is invalid.
+     * @See Token class for more details about valid names.
+     */
+    public class InvalidNameException : EasyOptException
+    {
+        /* Constructor method
+         * @param message exception's detail message
+         */
+        public InvalidNameException(string message)
+            : base(message)
+        { }
+    }
+
+    /**
+     * Exception thrown when the user attempts to add an option with a name 
+     * that is already registered.
+     */
+    public class DuplicateOptionNameException : EasyOptException
+    {
+        /**
+         * Constructor method
+         * @param option name that is being reassigned.
+         */
+        public DuplicateOptionNameException(string name)
+            : base("Option name " + name + " is already assigned")
+        { }
+    }
+
+   /**
+     * Class thrown when a parameter value is specified for a SimpleOption.
+     * SimpleOption does not have a parameter 
+     */
+    public class ForbiddenParameterException : EasyOptException
+    { }
+
+    /**
      * Auxiliary option interface that enables work
      * with all generic versions of Option< T > as with one type
      */
@@ -297,13 +333,6 @@ namespace EasyOpt
     }
 
     /**
-     * Class thrown when a parameter value is specified for a SimpleOption.
-     * SimpleOption does not have a parameter 
-     */
-    public class ForbiddenParameterException : EasyOptException
-    { }
-
-    /**
      * Interface for container of option objects.
      */
     internal interface IOptionContainer
@@ -332,7 +361,7 @@ namespace EasyOpt
         /**
          * Returns collection of the first option synonym for all options.
          */
-        IEnumerable<string> ListUniqueNames();
+        IEnumerable<string> ListFirstNames();
 
         /**
          * Returns list of synonyms for the option's first synonymous name.
@@ -371,7 +400,7 @@ namespace EasyOpt
         /**
          * Returns collection of the first option synonym for all options.
          */
-        public IEnumerable<String> ListUniqueNames()
+        public IEnumerable<String> ListFirstNames()
         {
             return this.names.Keys;
         }
@@ -391,18 +420,13 @@ namespace EasyOpt
                 throw new InvalidNameException("An Option must have at least one name.");
             }
 
-            // TODO checkConfiguration(option);
             foreach (String name in names)
             {
                 Token.CheckName(name);
 
                 if (this.ContainsName(name))
                 {
-                    throw new DuplicateOptionNameException (
-                        "Option name: " + 
-                        name + 
-                        " is already assigned," +
-                        " please choose another name.");
+                    throw new DuplicateOptionNameException (name);
                 }
 
                 this.options.Add(name, option);

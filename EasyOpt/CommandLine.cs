@@ -48,33 +48,158 @@ namespace EasyOpt
     }
 
     /**
-     * Class thrown when the name given to an option is invalid.
-     * @See Token class for more details about valid names.
+     * Exception for option errors.
      */
-    public class InvalidNameException : EasyOptException
+    public abstract class OptionException : EasyOptException
     {
-        /* Constructor method
-         * @param message exception's detail message
+        private String optionName;
+
+        /** Option name */
+        public String OptionName
+        {
+            get
+            {
+                return optionName;
+            }
+            private set
+            {
+                if (value.StartsWith("-")) {
+                    optionName = value;
+                }
+                else if (value.Length == 1)
+                {
+                    optionName = "-" + value;
+                }
+                else
+                {
+                    optionName = "--" + value;
+                }
+            }
+        }
+
+        /**
+         * @param option Option name. Accepts both names with or without -/-- at the beginning.
          */
-        public InvalidNameException(string message)
-            : base(message)
-        { }
+        protected OptionException(String option)
+        {
+            this.OptionName = option;
+        }
+
+        /**
+         * @param option Option name. Accepts both names with or without -/-- at the beginning.
+         */
+        protected OptionException(String option, Exception innerException)
+            : base("", innerException)
+        {
+            this.OptionName = option;
+        }
     }
 
     /**
-     * Exception thrown when the user attempts to add an option with a name 
-     * that is already registered.
+     * Exception thrown when a required option is missing
      */
-    public class DuplicateOptionNameException : EasyOptException
+    public class OptionMissingException : OptionException
     {
         /**
-         * Constructor method
-         * @param detail message with details of the exception.
+         * @param option Option name
          */
-        public DuplicateOptionNameException(string message)
-            : base(message)
+        public OptionMissingException(String option)
+            : base(option)
         { }
 
+        /**
+         * Gets a message that describes the current exception
+         */
+        public override string Message
+        {
+            get
+            {
+                return "Required option " + OptionName + " is missing";
+            }
+        }
+    }
+
+    /**
+     * Exception thrown when a required option parameter is missing
+     */
+    public class ParameterMissingException : OptionException
+    {
+        /**
+         * @param option Option name
+         */
+        public ParameterMissingException(String option)
+            : base(option)
+        { }
+
+        /**
+         * Gets a message that describes the current exception
+         */
+        public override string Message
+        {
+            get
+            {
+                return "Required parameter of " + OptionName + " is missing";
+            }
+        }
+    }
+
+    /**
+     * Exception thrown when parameter's value is invalid.
+     */
+    public class OptionParameterException : OptionException
+    {
+        /**
+         * The original value of the parameter before conversion.
+         */
+        public string ParameterValue
+        {
+            get
+            {
+                if (innerParameterException == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return InnerParameterException.ParameterValue;
+                }
+            }
+        }
+
+        private ParameterException innerParameterException;
+        /**
+         * Inner exception
+         */
+        public ParameterException InnerParameterException
+        {
+            get { return innerParameterException; }
+        }
+
+        /**
+         * @param option Option name
+         * @param parameter Parameter value before conversion
+         */
+        public OptionParameterException(String option, ParameterException innerException)
+            : base(option, innerException)
+        {
+            this.innerParameterException = innerException;
+        }
+
+        /**
+         * Gets a message that describes the current exception
+         */
+        public override string Message
+        {
+            get
+            {
+                string message = "Invalid " + OptionName + " parameter";
+                if (innerParameterException != null)
+                {
+                    message += ": " + innerParameterException.Message;
+                }
+                return message;
+            }
+        }
     }
 
     /**
@@ -124,7 +249,7 @@ namespace EasyOpt
         /**
          * List of non-option arguments.
          */
-        private List<string> programArguments = new List<string>();
+        private List<string> programArguments;
 
         /**
          * Returns non-option arguments.
@@ -140,12 +265,11 @@ namespace EasyOpt
          * to create a CommandLine instance.
          * 
          * @See OptionFactory
-         * 
-         * 
          */
         public CommandLine()
         {
             this.optionContainer = new OptionContainer();
+            this.programArguments = new List<string>();
             this.phase = ParsePhase.Option;
         }
 
@@ -161,7 +285,8 @@ namespace EasyOpt
          * 
          * At least one name for the option must be listed.
          * 
-         * Option name must not contain '=' character nor whitespace and it must not start with '-'
+         * Option name must not contain '=' character nor whitespace and it must not start with '-'.
+         * Option names are case-sensitive.
          * 
          * @param option Object representing an option. Must not be null.
          * @param names List of synonymous names for the option. One-character long name
@@ -238,18 +363,18 @@ namespace EasyOpt
         /**
          * Check that all required options are given within the command line arguments.
          * 
-         * @throw ParseException if there is a missing option in the arguments.
+         * @throw OptionMissingException if there is a missing option in the arguments.
          */
         private void checkRequiredOptions()
         {
-            IEnumerable<string> uniqueNames = this.optionContainer.ListUniqueNames();
+            IEnumerable<string> firstNames = this.optionContainer.ListFirstNames();
 
-            foreach (string uniqueName in uniqueNames)
+            foreach (string firstName in firstNames)
             {
-                IOption option = this.optionContainer.FindByName(uniqueName);
+                IOption option = this.optionContainer.FindByName(firstName);
                 if (option.IsRequired && !option.IsPresent)
                 {
-                    throw new ParseException("Option: " + uniqueName + " is required but not specified.");
+                    throw new OptionMissingException(firstName);
                 }
             }
 
@@ -285,16 +410,15 @@ namespace EasyOpt
             return currentToken;
         }
 
-
         /**
          * Verify that the final phase of the parser is a valid ending phase.
-         * @throw ParseException when the parser phase has a non valid ending state.
+         * @throw ParameterMissingException when the parser phase has a non valid ending state.
          */
         private void checkParserFinalState(Token lastParsedToken)
         {
             if (this.phase.Equals(ParsePhase.WaitingForArgument) && lastParsedToken.Option.IsParameterRequired)
             {
-                throw new ParseException("Missing argument for option: " + lastParsedToken.Name);
+                throw new ParameterMissingException(lastParsedToken.Name);
             }
         }
 
@@ -327,10 +451,6 @@ namespace EasyOpt
                 else if (token.Type.IsOption())
                 {
                     IOption option = optionContainer.FindByName(token.Name);
-                    if (option.IsPresent)
-                    {
-                        throw new ParseException("Option " + token.Name + " has been listed twice");
-                    }
                     option.IsPresent = true;
                     token.Option = option;
 
@@ -357,6 +477,7 @@ namespace EasyOpt
          * @param token the token that is being parsed
          * @param argument the parsed argument received from the command line.
          * @throw ParseException when is not possible to specify the value for the object.
+         * @throw OptionParameterException thrown when parameter value is invalid.
          */
         private void setOptionValue(Token token, string value)
         {
@@ -370,7 +491,7 @@ namespace EasyOpt
             }
             catch (ParameterException e)
             {
-                throw new ParseException("Parameter of option: " + token.UnparsedText + " is invalid.", e);
+                throw new OptionParameterException(token.Name, e);
             }
         }
 

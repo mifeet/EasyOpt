@@ -121,8 +121,8 @@ namespace TestEasyOpt
             Assert.IsNull(actualArgument.ProgramArgument);
         }
         [TestMethod()]
-        [ExpectedException(typeof(ParseException), "Ilegal option.")]
-        public void CreateTestIlegalOption()
+        [ExpectedException(typeof(ParseException), "Illegal option.")]
+        public void CreateTestIllegalOption()
         {
             IOptionContainer optionContainer = null;
 
@@ -130,8 +130,8 @@ namespace TestEasyOpt
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(ParseException), "Ilegal option.")]
-        public void CreateTestIlegalOptionDash()
+        [ExpectedException(typeof(ParseException), "Illegal option.")]
+        public void CreateTestIllegalOptionDash()
         {
             IOptionContainer optionContainer = null;
 
@@ -185,7 +185,7 @@ namespace TestEasyOpt
             Token.CheckName("long-integer");
             Assert.IsTrue(true);
             }
-            catch(InvalidNameException)
+            catch (InvalidNameException)
             {
                 Assert.IsTrue(false);
             }

@@ -137,8 +137,8 @@ namespace EasyOpt
         /** Valid regular expression of a short option  */
         private static Regex longOptionPattern = new Regex("^--" + longName + "(=[.]*)?");
 
-        /** Regular expression for an ilegal option */
-        private static Regex ilegalOptionPattern = new Regex("(^--[^-=\\s]$)|(^--(-)+)");
+        /** Regular expression for an illegal option */
+        private static Regex illegalOptionPattern = new Regex("(^--[^-=\\s]$)|(^--(-)+)");
 
         /** Parameter start index for the short unparsed argument */
         private const int indexStartParameter = 2;
@@ -175,9 +175,9 @@ namespace EasyOpt
 
                 tokens.Add(divisionToken);
             }
-            else if (ilegalOptionPattern.IsMatch(unparsedArgument))
+            else if (illegalOptionPattern.IsMatch(unparsedArgument))
             {
-                throw new ParseException("Ilegal option: " + unparsedArgument);
+                throw new ParseException("Unknown long option: " + unparsedArgument);
             }
             else if (shortOptionPattern.IsMatch(unparsedArgument))
             {

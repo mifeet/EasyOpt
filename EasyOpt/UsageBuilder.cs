@@ -58,12 +58,12 @@ namespace EasyOpt
             usageText.AppendLine();
             usageText.AppendLine();
 
-            IEnumerable<string> uniqueNames = optionContainer.ListUniqueNames();
+            IEnumerable<string> firstNames = optionContainer.ListFirstNames();
 
-            foreach (String uniqueName in uniqueNames)
+            foreach (String firstName in firstNames)
             {
-                IOption option = optionContainer.FindByName(uniqueName);
-                String[] names = optionContainer.FindSynonymsByName(uniqueName);
+                IOption option = optionContainer.FindByName(firstName);
+                String[] names = optionContainer.FindSynonymsByName(firstName);
 
                 formatNames(names, option);
                 formatOptionUsage(option);

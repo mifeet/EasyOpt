@@ -48,11 +48,7 @@ namespace EasyOpt
         {
             get
             {
-                string message = String.Format(
-                    "Invalid parameter value \"{0}\"",
-                    parameterValue
-                );
-                return message;
+                return "Invalid parameter value " + ParameterValue;
             }
         }
 
@@ -101,6 +97,27 @@ namespace EasyOpt
     }
 
     /**
+     * Exception thrown when an option's parameter is listed more than once.
+     */
+    public class DuplicateParameterException : ParameterException
+    {
+         public DuplicateParameterException(string parameterValue, Object parameter)
+            : base(parameterValue, parameter)
+        { }
+
+        /**
+         * Gets a message that describes the current exception
+         */
+         public override string Message
+         {
+             get
+             {
+                 return "Parameter value already defined";
+             }
+         }
+    }
+
+    /**
      * Class representing an option parameter.
      * 
      * This class is used to specify an option's parameter, conversion method,
@@ -119,7 +136,7 @@ namespace EasyOpt
         /**
          * Convert parameter's value from the command line string representation
          * to type T. 
-         * Throw ParameterConversionException if conversion fails.
+         * @throw ParameterConversionException if conversion fails.
          * @param parameterValue parameter's value as a string
          * @return parameter value converted to T
          */
@@ -187,11 +204,16 @@ namespace EasyOpt
             {
                 throw new ArgumentNullException("stringValue");
             }
-            this.value = this.convert(stringValue);
-            if (!this.CheckConstraints(this.value))
+            if (this.isValueValid)
+            {
+                throw new DuplicateParameterException(stringValue, this);
+            }
+            var newValue = this.convert(stringValue);
+            if (!this.CheckConstraints(newValue))
             {
                 throw new ConstraintException(stringValue, this);
             }
+            this.value = newValue;
             this.isValueValid = true;
         }
 

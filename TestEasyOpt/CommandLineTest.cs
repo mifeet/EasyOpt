@@ -114,7 +114,7 @@ namespace TestEasyOpt
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException), "Throw exception because c is not present in the command line arguments.")]
+        [ExpectedException(typeof(OptionMissingException), "Throw exception because c is not present in the command line arguments.")]
         public void TestParseABCDRequired()
         {
             Option<bool> a = OptionFactory.Create(true, "Format 24h");
@@ -229,7 +229,7 @@ namespace TestEasyOpt
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException), "Invalid integer parameter.")]
+        [ExpectedException(typeof(OptionParameterException), "Invalid integer parameter.")]
         public void TestParseIntParameterException()
         {
             IntParameter intParameter = new IntParameter(true, "Integer parameter");
@@ -245,7 +245,7 @@ namespace TestEasyOpt
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException), "Option requires a parameter.")]
+        [ExpectedException(typeof(ParameterMissingException), "Option requires a parameter.")]
         public void TestParseIntMissingParameterException()
         {
             IntParameter intParameter = new IntParameter(true, "Integer parameter");

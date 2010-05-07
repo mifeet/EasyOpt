@@ -27,7 +27,7 @@ namespace UseCaseTouch
 
         static void Main(string[] args)
         {
-            CommandLine parser = new CommandLine(args);
+            CommandLine parser = new CommandLine();
 
             var accessTime = OptionFactory.Create(false, "change only the access time");
             parser.AddOption(accessTime, 'a');
@@ -60,7 +60,7 @@ namespace UseCaseTouch
 
             try
             {
-                parser.Parse();
+                parser.Parse(args);
             }
             catch (Exception e)
             {

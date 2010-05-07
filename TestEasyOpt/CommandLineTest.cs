@@ -65,11 +65,11 @@ namespace TestEasyOpt
         {
             Option<bool> format = OptionFactory.Create(true, "Format 24h");
 
-            CommandLine commandLine = new CommandLine(new string [] {"-f"});
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(format, 'f');
 
-            commandLine.Parse();
+            commandLine.Parse(new string [] {"-f"});
 
             Assert.AreEqual(true, format.IsPresent);
         }
@@ -80,11 +80,11 @@ namespace TestEasyOpt
         {
             Option<bool> format = OptionFactory.Create(true, "Format 24h");
 
-            CommandLine commandLine = new CommandLine(new string[] { "-fa" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(format, 'f');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-fa" });
         }
 
         [TestMethod]
@@ -96,14 +96,14 @@ namespace TestEasyOpt
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+            CommandLine commandLine = new CommandLine();
 
 
             commandLine.AddOption(a, 'a');
             commandLine.AddOption(b, 'b');
             commandLine.AddOption(c, 'c');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-abcd" });
 
 
             Assert.IsTrue(a.IsPresent);
@@ -123,14 +123,14 @@ namespace TestEasyOpt
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-ab" });
+            CommandLine commandLine = new CommandLine();
 
 
             commandLine.AddOption(a, 'a');
             commandLine.AddOption(b, 'b');
             commandLine.AddOption(c, 'c');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-ab" });
 
 
             Assert.IsTrue(a.IsPresent);
@@ -149,14 +149,14 @@ namespace TestEasyOpt
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abc", "d" });
+            CommandLine commandLine = new CommandLine();
 
 
             commandLine.AddOption(a, 'a');
             commandLine.AddOption(b, 'b');
             commandLine.AddOption(c, 'c');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-abc", "d" });
 
 
             Assert.IsTrue(a.IsPresent);
@@ -172,11 +172,11 @@ namespace TestEasyOpt
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-c", "d" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(c, 'c');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-c", "d" });
 
             Assert.IsTrue(c.IsPresent);
 
@@ -193,14 +193,14 @@ namespace TestEasyOpt
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> c = OptionFactory.Create<string>(false, "help", stringParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-ab" });
+            CommandLine commandLine = new CommandLine();
 
 
             commandLine.AddOption(a, 'a');
             commandLine.AddOption(b, 'b');
             commandLine.AddOption(c, 'c');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-ab" });
 
 
             Assert.IsTrue(a.IsPresent);
@@ -219,11 +219,11 @@ namespace TestEasyOpt
 
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-i233" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-i233" });
 
             Assert.AreEqual(233, intOption.Value);
         }
@@ -236,11 +236,11 @@ namespace TestEasyOpt
 
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-iaaa" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-iaaa" });
 
         }
 
@@ -252,11 +252,11 @@ namespace TestEasyOpt
 
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-i" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-i" });
 
         }
 
@@ -267,11 +267,11 @@ namespace TestEasyOpt
 
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-i" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-i" });
 
             Assert.AreEqual(0, intOption.Value);
         }
@@ -283,11 +283,11 @@ namespace TestEasyOpt
 
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-i334" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-i334" });
 
             Assert.AreEqual(334, intOption.Value);
         }
@@ -300,20 +300,20 @@ namespace TestEasyOpt
 
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-f334" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-f334" });
 
         }
 
         [TestMethod]
         public void TestParseOnlyProgramArguments()
         {
-            CommandLine commandLine = new CommandLine(new string[] { "334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "334", "28", "a" });
 
             String[] arguments = commandLine.GetArguments();
 
@@ -329,11 +329,11 @@ namespace TestEasyOpt
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-i", "334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-i", "334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
 
@@ -351,11 +351,11 @@ namespace TestEasyOpt
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-i", "--", "334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i');
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "-i", "--", "334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
 
@@ -372,11 +372,11 @@ namespace TestEasyOpt
         {
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
-            CommandLine commandLine = new CommandLine(new string[] { "--integer", "334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i', "integer");
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "--integer", "334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
 
@@ -393,11 +393,11 @@ namespace TestEasyOpt
         {
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
-            CommandLine commandLine = new CommandLine(new string[] { "--integer=334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i', "integer");
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "--integer=334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
 
@@ -413,11 +413,11 @@ namespace TestEasyOpt
         {
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
-            CommandLine commandLine = new CommandLine(new string[] { "--integer", "--", "334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i', "integer");
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "--integer", "--", "334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
 
@@ -434,11 +434,11 @@ namespace TestEasyOpt
         {
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
-            CommandLine commandLine = new CommandLine(new string[] { "--integer=334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i', "integer");
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "--integer=334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
             Assert.AreEqual(334, intOption.Value);
@@ -456,11 +456,11 @@ namespace TestEasyOpt
             IntParameter intParameter = new IntParameter(false, "Integer parameter");
             Option<int> intOption = OptionFactory.Create<int>(true, "Integer option", intParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "--integer=334", "28", "a" });
+            CommandLine commandLine = new CommandLine();
 
             commandLine.AddOption(intOption, 'i', "integer");
 
-            commandLine.Parse();
+            commandLine.Parse(new string[] { "--integer=334", "28", "a" });
 
             Assert.AreEqual(true, intOption.IsPresent);
             Assert.AreEqual(334, intOption.Value);
@@ -485,7 +485,7 @@ namespace TestEasyOpt
             StringParameter stringParameter = new StringParameter(true, "help");
             Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+            CommandLine commandLine = new CommandLine();
 
 
             commandLine.AddOption(a, 'a');
@@ -502,7 +502,7 @@ namespace TestEasyOpt
             Option<bool> a = OptionFactory.Create(true, "Format 24h");
 
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+            CommandLine commandLine = new CommandLine();
 
 
             commandLine.AddOption(a, 'a', "a");
@@ -517,7 +517,7 @@ namespace TestEasyOpt
             Option<bool> a = OptionFactory.Create(true, "Format 24h");
 
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+            CommandLine commandLine = new CommandLine();
 
             string[] names = null;
 
@@ -531,7 +531,7 @@ namespace TestEasyOpt
             Option<bool> a = OptionFactory.Create(true, "Format 24h");
 
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+            CommandLine commandLine = new CommandLine();
 
             string[] names = new String[0];
 
@@ -545,7 +545,7 @@ namespace TestEasyOpt
             Option<bool> a = OptionFactory.Create(true, "Format 24h");
 
 
-            CommandLine commandLine = new CommandLine(new string[] { "-abcd" });
+            CommandLine commandLine = new CommandLine();
 
             string[] names = new String[1];
 

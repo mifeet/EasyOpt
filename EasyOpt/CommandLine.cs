@@ -117,11 +117,6 @@ namespace EasyOpt
         private IOptionContainer optionContainer;
 
         /**
-         * Unparsed arguments from the command line
-         */
-        private String[] unparsedArguments;
-
-        /**
          * Stores the parser's current phase
          */
         private ParsePhase phase;
@@ -145,12 +140,11 @@ namespace EasyOpt
          * 
          * @See OptionFactory
          * 
-         * @param unparsedArguments Array of arguments from the command line.
+         * 
          */
-        public CommandLine(String[] unparsedArguments)
+        public CommandLine()
         {
             this.optionContainer = new OptionContainer();
-            this.unparsedArguments = unparsedArguments;
             this.phase = ParsePhase.Option;
         }
 
@@ -206,9 +200,11 @@ namespace EasyOpt
          * @see Option<T> to know how to retrieve the command line options
          * after the parse process.
          * 
+         * @param unparsedArguments Array of arguments from the command line.
+         * 
          * @throw ParseException if it is not possible to parse an argument
          */
-        public void Parse()
+        public void Parse(String[] unparsedArguments)
         {
             Token lastParsedToken = null;
 

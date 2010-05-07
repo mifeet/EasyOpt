@@ -102,7 +102,7 @@ namespace UseCaseLs
         static void Main(string[] args)
         {
             //args = new String[] { "-q" };
-            CommandLine parser = new CommandLine(args);
+            CommandLine parser = new CommandLine();
 
             var all = OptionFactory.Create(false, "do not ignore entries starting with .");
             parser.AddOption(all, 'a', "all");
@@ -156,7 +156,7 @@ namespace UseCaseLs
 
             try
             {
-                parser.Parse();
+                parser.Parse(args);
             }
             catch (Exception e)
             {

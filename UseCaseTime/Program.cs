@@ -14,7 +14,7 @@ namespace UseCaseTime
         static void Main(string[] args)
         {
             
-            CommandLine parser = new CommandLine(args);
+            CommandLine parser = new CommandLine();
 
             var outputParam = new StringParameter(true, "FILE");
             var output = OptionFactory.Create(
@@ -54,7 +54,7 @@ namespace UseCaseTime
 
             try
             {
-                parser.Parse();
+                parser.Parse(args);
             }
             catch (Exception e)
             {

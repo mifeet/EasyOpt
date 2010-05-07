@@ -72,7 +72,7 @@ pre {
 </div>
 <div class="contents">
 <h1>EasyOpt argument parsing library documentation</h1>
-<p>EasyOpt is a library offering an easy-to-use API for work with program options and arguments. It is written in C# and can be used by any application written for .NET.</p>
+<p>EasyOpt is a library offering an easy-to-use API for work with program options and arguments. It is written in C# (tested with .NET Framework 3.5 SP1) and can be used by any application written for .NET.</p>
 
 <h2>Contents of this document</h2>
 <ul>
@@ -193,11 +193,12 @@ The usage screen for the program above would look like this:
 	Next you create an option object the same way as in case of an option without a parameter, but you pass <span class="code">Parameter&lt;T&gt;</span>
 	object as the third argument of <span class="code">OptionFactory.Create()</span>. This method is generic, but thanks to type inference in C# you don't need
 	to specify the type explicitely. Thus the following two lines of code are equivalent:
+</p>
 <pre class="source-csharp">
 var lineWidth <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span><span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;Wrap lines at WIDTH&quot;</span>, lineWidthParam<span class="br0">&#41;</span><span class="sy0">;</span>
 Option&lt;<span class="kw4">int</span>&gt; lineWidth <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span>&lt;<span class="kw4">int</span>&gt;<span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;Wrap lines at WIDTH&quot;</span>, lineWidthParam<span class="br0">&#41;</span><span class="sy0">;</span>
 </pre>
-<p>Finally you register the option object to <span class="code">CommandLine</span> instance and assign it a name with <span class="code">AddOption()</span>.
+<p>Finally you register the option object to <span class="code">CommandLine</span> instance and assign it names with <span class="code">AddOption()</span>.
 	You can specify multiple names. Names one character long are processed as short option names, longer names are processed as long option names.
 	For convenience there are several overloaded versions of <span class="code">AddOption()</span>. The following lines are equivalent:
 </p>
@@ -208,7 +209,7 @@ parser.<span class="me1">AddOption</span><span class="br0">&#40;</span>verbose, 
 </pre>
 <p>
 	The last feature EasyOpt provides for options and parameters are constraints. Constraints define what parameter values are valid.
-	For example you can define that an option parameter must be a number greater than zero or that the parameter value must be in a certain list of accepted values.
+	For example you can define that an option parameter must be a number greater than zero or that a parameter value must be in a certain list of accepted values.
 	In EasyOpt, constraints are classes implementing <span class="code">IConstraint&lt;T&gt;</span> interface. EasyOpt has several predefined constraints &mdash;
 	<span class="code">LowerBoundConstraint</span>, <span class="code">UpperBoundConstraint</span>, <span class="code">StringEnumerationConstraint</span> and
 	<span class="code">ExistingFileConstraint</span>.
@@ -249,7 +250,7 @@ You can customize the usage text by setting <span class="Code">CommandLine.Usage
 </p>
 <pre class="source-csharp"><span class="kw4">bool</span> isVerbose <span class="sy0">=</span> verbose.<span class="me1">IsPresent</span><span class="sy0">;</span></pre>
 <p>
-	To retrieve a parameter value, use <span class="code">Param&lt;T&gt;.Value</span> property. If the value hasn't been specified in the parsed arguments, it returns the default value.
+	To retrieve a parameter value, use <span class="code">Parameter&lt;T&gt;.Value</span> property. If the value hasn't been specified in the parsed arguments, it returns the default value.
 </p>
 <pre class="source-csharp"><span class="kw4">int</span> maxLineWidth <span class="sy0">=</span> lineWidthParam.<span class="me1">Value</span><span class="sy0">;</span></pre>
 <p>
@@ -259,9 +260,18 @@ You can customize the usage text by setting <span class="Code">CommandLine.Usage
 <pre class="source-csharp"><span class="kw4">bool</span> isVerbose <span class="sy0">=</span> verbose.<span class="me1">Value</span><span class="sy0">;</span>
 <span class="kw4">int</span> maxLineWidth <span class="sy0">=</span> lineWidth.<span class="me1">Value</span><span class="sy0">;</span>
 </pre>
+<p>
+	Non-option arguments can be retrieved as a string array:
+</p>
+<pre class="source-csharp"><span class="kw4">String</span><span class="br0">&#91;</span><span class="br0">&#93;</span> arguments <span class="sy0">=</span> parser.<span class="me1">GetArguments</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
 
 <h2 id="detailed">Detailed description</h2>
-<p>TODO</p>
+<p>You can find more detailed description of EasyOpt in the following sections:</p>
+<ul>
+	<li><a href="configuring_options.html">Configuring options</a></li>
+	<li><a href="argument_parsing.html">Argument parsing</a></li>
+	<li><a href="retrieving_values.html">Retrieving values &amp; arguments</a></li>
+</ul>
 
 <h2 id="moreexamples">More examples</h2>
 <p>

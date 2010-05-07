@@ -57,6 +57,9 @@
     <Shadow Include="Test References\EasyOpt.accessor" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\EasyOpt\EasyOpt.csproj">
       <Project>{1280F950-8E15-47B1-BCBF-C226B516375A}</Project>
       <Name>EasyOpt</Name>

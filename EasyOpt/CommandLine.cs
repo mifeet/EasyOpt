@@ -104,7 +104,7 @@ namespace EasyOpt
      * Use this class in three steps.
      * 
      * 1. Create a new instance with the command line arguments as a parameter
-     * 2. Configuration step: cal addOption(). One call per each Option.
+     * 2. Configuration step: call AddOption(). One call per each Option.
      * 3. Parse: call parse() to begin the parse process.
      * 
      * The parse method fill your options with all the needed information.
@@ -127,7 +127,8 @@ namespace EasyOpt
         private List<string> programArguments = new List<string>();
 
         /**
-         * Returns non-option arguments
+         * Returns non-option arguments.
+         * Arguments are listed in the same order they were on the input.
          */
         public String[] GetArguments()
         {
@@ -166,6 +167,8 @@ namespace EasyOpt
          * @param names List of synonymous names for the option. One-character long name
          *      is treated as a short option name, longer name is treated as a long option name.
          *      Must not be empty.
+         * @throw DuplicateOptionNameException
+         * @throw InvalidNameException
          */
         public void AddOption<T>(Option<T> option, params String[] names)
         {

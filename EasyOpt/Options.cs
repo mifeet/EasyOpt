@@ -381,6 +381,8 @@ namespace EasyOpt
          * option's synonymous option names.
          * @param option Option object
          * @param names List of synonymous names for the option.
+         * @throw DuplicateOptionNameException
+         * @throw InvalidNameException
          */
         public void Add(IOption option, String[] names)
         {

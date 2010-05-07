@@ -274,7 +274,7 @@ namespace EasyOpt
         }
 
         /**
-         * Description of program usage.
+         * Description of program usage. Can be null.
          */
         public String UsageDescription { get; set; }
 

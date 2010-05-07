@@ -31,7 +31,7 @@ namespace EasyOpt
         private const int maxWidth = 80;
 
         /**
-         * @param usageDescription Brief program usage description
+         * @param usageDescription Brief program usage description; can be null
          * @param optionContainer Container of options displayed in the usage text
          */
         public UsageBuilder(String usageDescription, IOptionContainer optionContainer)
@@ -167,6 +167,11 @@ namespace EasyOpt
          */
         private void formatOptionUsage(IOption option)
         {
+            if (option.UsageText == null)
+            {
+                return;
+            }
+
             string doubleIndent = indent + indent;
 
             String[] words = option.UsageText.Split(' ');

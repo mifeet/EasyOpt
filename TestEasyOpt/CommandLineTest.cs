@@ -141,6 +141,50 @@ namespace TestEasyOpt
         }
 
         [TestMethod]
+        public void TestParseABCSpaceDRequired()
+        {
+            Option<bool> a = OptionFactory.Create(true, "Format 24h");
+            Option<bool> b = OptionFactory.Create(true, "Format 24h");
+
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-abc", "d" });
+
+
+            commandLine.AddOption(a, 'a');
+            commandLine.AddOption(b, 'b');
+            commandLine.AddOption(c, 'c');
+
+            commandLine.Parse();
+
+
+            Assert.IsTrue(a.IsPresent);
+            Assert.IsTrue(b.IsPresent);
+            Assert.IsTrue(c.IsPresent);
+
+            Assert.AreEqual("d", c.Value);
+        }
+
+        [TestMethod]
+        public void TestParseCSpaceDRequired()
+        {
+            StringParameter stringParameter = new StringParameter(true, "help");
+            Option<string> c = OptionFactory.Create<string>(true, "help", stringParameter);
+
+            CommandLine commandLine = new CommandLine(new string[] { "-c", "d" });
+
+            commandLine.AddOption(c, 'c');
+
+            commandLine.Parse();
+
+            Assert.IsTrue(c.IsPresent);
+
+            Assert.AreEqual("d", c.Value);
+        }
+
+
+        [TestMethod]
         public void TestParseABCDOptional()
         {
             Option<bool> a = OptionFactory.Create(true, "Format 24h");

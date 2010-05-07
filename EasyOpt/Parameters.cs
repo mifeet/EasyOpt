@@ -150,6 +150,7 @@ namespace EasyOpt
 
         /**
          * Default value used if no value is specified on the command line.
+         * Constraints do not apply to this default value.
          */
         public T DefaultValue { get; set; }
 

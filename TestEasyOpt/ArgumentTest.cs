@@ -1,4 +1,4 @@
-﻿using EasyOpt;
+﻿using EasyOptLibrary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;

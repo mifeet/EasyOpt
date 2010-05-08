@@ -19,11 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseLs", "UseCaseLs\UseC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{A43A4418-EB89-4F5E-A0E1-2FE9179F8A54}"
 	ProjectSection(SolutionItems) = preProject
-		documentation\argument_parsing.html = documentation\argument_parsing.html
-		documentation\configuring_options.html = documentation\configuring_options.html
-		documentation\examples.html = documentation\examples.html
+		documentation\_argument_parsing.html = documentation\_argument_parsing.html
+		documentation\_configuring_options.html = documentation\_configuring_options.html
+		documentation\_examples.html = documentation\_examples.html
+		documentation\_retrieving_values.html = documentation\_retrieving_values.html
 		documentation\index.html = documentation\index.html
-		documentation\retrieving_values.html = documentation\retrieving_values.html
 	EndProjectSection
 EndProject
 Global

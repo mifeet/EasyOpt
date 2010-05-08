@@ -81,16 +81,16 @@ pre {
 </ul>
 <h2 id="parsing">Parsing arguments</h2>
 <p>
-	In order to parse command line arguments, pass them as a string array to <span class="code">CommandLine.Parse()</span>.
+	In order to parse command line arguments, pass them as a string array to <span class="code">EasyOpt.Parse()</span>.
 </p>
-<pre class="source-csharp">CommandLine parser <span class="sy0">=</span> <span class="kw3">new</span> CommandLine<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<pre class="source-csharp">EasyOpt parser <span class="sy0">=</span> <span class="kw3">new</span> EasyOpt<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
 <span class="co1">// ... set up options ... </span>
 parser.<span class="me1">Parse</span><span class="br0">&#40;</span>args<span class="br0">&#41;</span><span class="sy0">;</span></pre>
 
 <p>
 	For each option in <span class="code">args</span>, EasyOpt parser sets <span class="code">IsPresent</span> of the corresponding <span class="code">Option&lt;T&gt;</span> instance to true.
 	Option parameters are stored in the corresponding <span class="code">Parameter&lt;T&gt;</span> instance.
-	Non-option arguments can be retrieved with <span class="code">CommandLine.GetArguments()</span> method.
+	Non-option arguments can be retrieved with <span class="code">EasyOpt.GetArguments()</span> method.
 	For more information how to access these values, see <a href="retrieving_values.html">Retrieving option values &amp; arguments</a>.
 </p>
 

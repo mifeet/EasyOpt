@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EasyOpt;
+using EasyOptLibrary;
 
 /**
  * Use case of EasyOpt: selected GNU ls command line arguments.
@@ -102,7 +102,7 @@ namespace UseCaseLs
         static void Main(string[] args)
         {
             //args = new String[] { "-q" };
-            CommandLine parser = new CommandLine();
+            EasyOpt parser = new EasyOpt();
 
             var all = OptionFactory.Create(false, "do not ignore entries starting with .");
             parser.AddOption(all, 'a', "all");

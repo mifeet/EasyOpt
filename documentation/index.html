@@ -106,7 +106,7 @@ With EasyOpt you can:
 <p>Here is a simple example showing how you can use EasyOpt:</p>
 
 <pre class="source-csharp"><span class="kw1">static</span> <span class="kw1">void</span> Main<span class="br0">&#40;</span><span class="kw4">string</span><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
-  CommandLine parser <span class="sy0">=</span> <span class="kw3">new</span> CommandLine<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+  EasyOpt parser <span class="sy0">=</span> <span class="kw3">new</span> EasyOpt<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
 &nbsp;
   var verbose <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span><span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;Be more verbose&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
   parser.<span class="me1">AddOption</span><span class="br0">&#40;</span>verbose, <span class="st0">'v'</span>, <span class="st0">&quot;verbose&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
@@ -151,9 +151,9 @@ The usage screen for the program above would look like this:
 
 <h2 id="howto">How to use EasyOpt</h2>
 <p>In order to start using EasyOpt, you need to add reference to EasyOpt library .dll file to your project.
-	All classes that EasyOpt consists of are in namespace EasyOpt. In C# you can import this namespace with
+	All classes that EasyOpt consists of are in namespace EasyOptLibrary. In C# you can import this namespace with
 </p>
-<pre>using EasyOpt;</pre>
+<pre>using EasyOptLibrary;</pre>
 <p>Using the library to parse program arguments can be divided in three steps:</p>
 <ol>
 	<li>Define program options, their parameters and constraints.</li>
@@ -163,9 +163,9 @@ The usage screen for the program above would look like this:
 
 <h3 id="options">Defining program options</h3>
 <p>
-	First, you need to create an instance of <span class="code">CommandLine</span>:
+	First, you need to create an instance of <span class="code">EasyOpt</span>:
 </p>
-<pre  class="source-csharp">CommandLine parser <span class="sy0">=</span> <span class="kw3">new</span> CommandLine<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
+<pre  class="source-csharp">EasyOpt parser <span class="sy0">=</span> <span class="kw3">new</span> EasyOpt<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
 <p>
 	Each option is represented by an instance of generic class <span class="code">Option&lt;T&gt;</span>.
 	To create an instance of <span class="code">Option&lt;T&gt;</span>, use factory methods provided by <span class="code">OptionFactory</span>.
@@ -198,7 +198,7 @@ The usage screen for the program above would look like this:
 var lineWidth <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span><span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;Wrap lines at WIDTH&quot;</span>, lineWidthParam<span class="br0">&#41;</span><span class="sy0">;</span>
 Option&lt;<span class="kw4">int</span>&gt; lineWidth <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span>&lt;<span class="kw4">int</span>&gt;<span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;Wrap lines at WIDTH&quot;</span>, lineWidthParam<span class="br0">&#41;</span><span class="sy0">;</span>
 </pre>
-<p>Finally you register the option object to <span class="code">CommandLine</span> instance and assign it names with <span class="code">AddOption()</span>.
+<p>Finally you register the option object to <span class="code">EasyOpt</span> instance and assign it names with <span class="code">AddOption()</span>.
 	You can specify multiple names. Names one character long are processed as short option names, longer names are processed as long option names.
 	For convenience there are several overloaded versions of <span class="code">AddOption()</span>. The following lines are equivalent:
 </p>
@@ -225,7 +225,7 @@ lineWidthParam.<span class="me1">AddConstraint</span><span class="br0">&#40;</sp
 
 <h3 id="parsing">Parsing arguments</h3>
 <p>
-	After you've set all options, it's time to get to the actual argument parsing. You do that simply by calling <span class="code">CommandLine.Parse()</span>.
+	After you've set all options, it's time to get to the actual argument parsing. You do that simply by calling <span class="code">EasyOpt.Parse()</span>.
 	As its only argument you pass arguments from the command line in a string array:
 </p>
 <pre class="source-csharp">parser.<span class="me1">Parse</span><span class="br0">&#40;</span>args<span class="br0">&#41;</span><span class="sy0">;</span></pre>
@@ -239,8 +239,8 @@ lineWidthParam.<span class="me1">AddConstraint</span><span class="br0">&#40;</sp
   Console.<span class="me1">Write</span><span class="br0">&#40;</span> parser.<span class="me1">GetUsage</span><span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#41;</span><span class="sy0">;</span>
 <span class="br0">&#125;</span></pre>
 <p>
-You can customize the usage text by setting <span class="Code">CommandLine.UsageDescription</span> property.
-<span class="code">GetUsage()</span> returns value of <span class="Code">CommandLine.UsageDescription</span> plus description of all registered options.
+You can customize the usage text by setting <span class="Code">EasyOpt.UsageDescription</span> property.
+<span class="code">GetUsage()</span> returns value of <span class="Code">EasyOpt.UsageDescription</span> plus description of all registered options.
 </p>
 
 <h3 id="retrieving">Retrieving option values &amp; non-option arguments</h3>
@@ -268,14 +268,15 @@ You can customize the usage text by setting <span class="Code">CommandLine.Usage
 <h2 id="detailed">Detailed description</h2>
 <p>You can find more detailed description of EasyOpt in the following sections:</p>
 <ul>
-	<li><a href="configuring_options.html">Configuring options</a></li>
-	<li><a href="argument_parsing.html">Argument parsing</a></li>
-	<li><a href="retrieving_values.html">Retrieving values &amp; arguments</a></li>
+	<li><a href="_configuring_options.html">Configuring options</a></li>
+	<li><a href="_argument_parsing.html">Argument parsing</a></li>
+	<li><a href="_retrieving_values.html">Retrieving values &amp; arguments</a></li>
+	<li><a href="_usage_text.html">Usage text</a></li>
 </ul>
 
 <h2 id="moreexamples">More examples</h2>
 <p>
-	More examples of how EasyOpt can be used can be found on a <a href="examples.html">special page</a>.
+	More examples of how EasyOpt can be used can be found on a <a href="_examples.html">special page</a>.
 </p>
 
 </div>

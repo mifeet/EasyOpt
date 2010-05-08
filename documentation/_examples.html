@@ -114,7 +114,7 @@ pre {
 <p>Program source code (<a href="sample_time.cs">download</a>):<p>
 <pre class="source-csharp"><span class="kw1">static</span> <span class="kw1">void</span> Main<span class="br0">&#40;</span><span class="kw4">string</span><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
   <span class="co1">// Create a parser instance</span>
-  CommandLine parser <span class="sy0">=</span> <span class="kw3">new</span> CommandLine<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+  EasyOpt parser <span class="sy0">=</span> <span class="kw3">new</span> EasyOpt<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
 &nbsp;
   <span class="co1">// Create a new string parameter.</span>
   var outputParam <span class="sy0">=</span> <span class="kw3">new</span> StringParameter<span class="br0">&#40;</span><span class="kw1">true</span>, <span class="st0">&quot;FILE&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
@@ -273,7 +273,7 @@ pre {
 <span class="kw4">class</span> Program <span class="br0">&#123;</span>
   <span class="kw1">static</span> <span class="kw1">void</span> Main<span class="br0">&#40;</span><span class="kw4">string</span><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="co1">// Create a new parser instance</span>
-    CommandLine parser <span class="sy0">=</span> <span class="kw3">new</span> CommandLine<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    EasyOpt parser <span class="sy0">=</span> <span class="kw3">new</span> EasyOpt<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
 &nbsp;
     <span class="co1">// Create options without a parameter</span>
     var all <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span><span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;do not ignore entries starting with .&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
@@ -408,7 +408,7 @@ pre {
 <span class="kw4">class</span> Program <span class="br0">&#123;</span>
   <span class="kw1">static</span> <span class="kw1">void</span> Main<span class="br0">&#40;</span><span class="kw4">string</span><span class="br0">&#91;</span><span class="br0">&#93;</span> args<span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="co1">// Create a new parser instance</span>
-    CommandLine parser <span class="sy0">=</span> <span class="kw3">new</span> CommandLine<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    EasyOpt parser <span class="sy0">=</span> <span class="kw3">new</span> EasyOpt<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
 &nbsp;
     <span class="co1">// Add some options</span>
     var accessTime <span class="sy0">=</span> OptionFactory.<span class="me1">Create</span><span class="br0">&#40;</span><span class="kw1">false</span>, <span class="st0">&quot;change only the access time&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>

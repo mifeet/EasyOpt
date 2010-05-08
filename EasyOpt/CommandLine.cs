@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EasyOpt
+namespace EasyOptLibrary
 {
     /**
      * Base class for exceptions thrown by EasyOpt components.
@@ -234,7 +234,7 @@ namespace EasyOpt
      * 
      * The parse method fill your options with all the needed information.
      */
-    public class CommandLine
+    public class EasyOpt
     {
         /**
          * Container of all option objects passed by AddOption< T >()
@@ -261,12 +261,11 @@ namespace EasyOpt
         }
 
         /**
-         * Initializes a CommandLine instance. This instance should be called
-         * to create a CommandLine instance.
+         * Initializes an EasyOpt parser instance.
          * 
          * @See OptionFactory
          */
-        public CommandLine()
+        public EasyOpt()
         {
             this.optionContainer = new OptionContainer();
             this.programArguments = new List<string>();
@@ -287,6 +286,8 @@ namespace EasyOpt
          * 
          * Option name must not contain '=' character nor whitespace and it must not start with '-'.
          * Option names are case-sensitive.
+         * 
+         * An option should not be registered multiple times.
          * 
          * @param option Object representing an option. Must not be null.
          * @param names List of synonymous names for the option. One-character long name

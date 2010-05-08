@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EasyOpt;
+using EasyOptLibrary;
 
 /**
  * Use case of EasyOpt: selected GNU touch command line arguments.
@@ -27,7 +27,7 @@ namespace UseCaseTouch
 
         static void Main(string[] args)
         {
-            CommandLine parser = new CommandLine();
+            EasyOpt parser = new EasyOpt();
 
             var accessTime = OptionFactory.Create(false, "change only the access time");
             parser.AddOption(accessTime, 'a');

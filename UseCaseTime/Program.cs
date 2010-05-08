@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EasyOpt;
+using EasyOptLibrary;
 
 /**
  * Use case of EasyOpt: selected GNU time command line arguments.
@@ -14,7 +14,7 @@ namespace UseCaseTime
         static void Main(string[] args)
         {
             
-            CommandLine parser = new CommandLine();
+            EasyOptLibrary.EasyOpt parser = new EasyOptLibrary.EasyOpt();
 
             var outputParam = new StringParameter(true, "FILE");
             var output = OptionFactory.Create(

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EasyOpt
+namespace EasyOptLibrary
 {
     /**
      * Exception thrown option parameter is invalid.

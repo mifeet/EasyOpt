@@ -8,7 +8,7 @@
     <ProjectGuid>{1280F950-8E15-47B1-BCBF-C226B516375A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyOpt</RootNamespace>
+    <RootNamespace>EasyOptLibrary</RootNamespace>
     <AssemblyName>EasyOpt</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

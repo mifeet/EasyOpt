@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EasyOpt
+namespace EasyOptLibrary
 {
     /**
      * Class thrown when the name given to an option is invalid.
@@ -378,7 +378,7 @@ namespace EasyOpt
     {
         /**
          * Dictionary containing all IOption objects passed by
-         * CommandLine.AddOption() indexed by all option synonymous names.
+         * EasyOpt.AddOption() indexed by all option synonymous names.
          */
         private Dictionary<String, IOption> options;
 

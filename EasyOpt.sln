@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		documentation\_configuring_options.html = documentation\_configuring_options.html
 		documentation\_examples.html = documentation\_examples.html
 		documentation\_retrieving_values.html = documentation\_retrieving_values.html
+		documentation\_usage_text.html = documentation\_usage_text.html
 		documentation\index.html = documentation\index.html
 	EndProjectSection
 EndProject

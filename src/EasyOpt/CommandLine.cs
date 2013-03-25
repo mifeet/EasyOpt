@@ -219,12 +219,11 @@ namespace EasyOptLibrary
     }
 
     /**
-     * This class is abstraction of the command line. Create an instance of 
+     * This class is abstraction for the command line arguments. Create an instance of 
      * this class to start working with EasyOpt. It is responsible 
-     * for all the procedures directly related to the user of this library.
+     * for all the procedures directly related to use of this library.
      * It provides methods to add options, parse the command line
-     * argument based and generate a text usage.
-     * 
+     * arguments based on them and generate a text usage.
      * 
      * Use this class in three steps.
      * 
@@ -232,7 +231,7 @@ namespace EasyOptLibrary
      * 2. Configuration step: call AddOption(). One call per each Option.
      * 3. Parse: call parse() to begin the parse process.
      * 
-     * The parse method fill your options with all the needed information.
+     * The parse method will fill your options with all the needed information.
      */
     public class EasyOpt
     {
@@ -279,7 +278,7 @@ namespace EasyOptLibrary
 
         /**
          * Add option using names as its synonymous option names.
-         * Names one-character long are treated as short options (e.g. -v), 
+         * Names one character long are treated as short options (e.g. -v), 
          * longer names are treated as long option names (e.g. --verbose)
          * 
          * At least one name for the option must be listed.
@@ -329,7 +328,7 @@ namespace EasyOptLibrary
          * Each Option instance is filled with the information needed during
          * the parse process.
          * 
-         * @see Option<T> to know how to retrieve the command line options
+         * @see Option<T> to see how to retrieve the command line options
          * after the parse process.
          * 
          * @param unparsedArguments Array of arguments from the command line.
